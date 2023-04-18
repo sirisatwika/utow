@@ -1,11 +1,8 @@
-import modbus_tk.defines as cst
-import modbus_tk.modbus as modbus
-import modbus_tk.modbus_rtu as modbus_rtu
+import serial
+import time
 
-# Define the Modbus slave ID
+# Define the Modbus slave ID and register addresses for flowrate and pH
 SLAVE_ID = 1
-
-# Define the Modbus register addresses for flowrate and pH
 FLOWRATE_ADDRESS = 0
 PH_ADDRESS = 1
 
@@ -13,21 +10,24 @@ PH_ADDRESS = 1
 PORT = "/dev/ttyUSB0"
 BAUDRATE = 9600
 
-# Create a Modbus RTU master
-master = modbus_rtu.RtuMaster(
-    modbus.SerialPort(PORT, BAUDRATE, bytesize=8, parity='N', stopbits=1, xonxoff=0)
-)
-master.set_timeout(5.0)
+# Open the Modbus RTU serial port
+ser = serial.Serial(port=PORT, baudrate=BAUDRATE, bytesize=8, parity='N', stopbits=1, xonxoff=0)
+ser.timeout = 1
 
-# Start the Modbus RTU master
-master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, FLOWRATE_ADDRESS, output_value=100)
-master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, PH_ADDRESS, output_value=7.0)
-
-# Simulate Modbus data for flowrate and pH
+# Simulate continuous Modbus data for flowrate and pH
 while True:
-    flowrate = 100.0  # Simulate flowrate data
-    ph = 7.0  # Simulate pH data
+    # Simulate flowrate and pH data
+    flowrate = 50.0 + 50.0 * (time.time() % 10) / 10.0  # Range from 50 to 100
+    ph = 6.0 + 1.0 * (time.time() % 10) / 10.0  # Range from 6 to 7
     
-    # Write the flowrate and pH data to the Modbus registers
-    master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, FLOWRATE_ADDRESS, output_value=int(flowrate))
-    master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, PH_ADDRESS, output_value=int(ph * 10))
+    # Convert the flowrate and pH data to Modbus register values
+    flowrate_value = int(flowrate * 10)
+    ph_value = int(ph * 10)
+    
+    # Build the Modbus RTU frame for flowrate and pH data
+    frame = bytearray([SLAVE_ID, 6, 0, FLOWRATE_ADDRESS, (flowrate_value >> 8) & 0xff, flowrate_value & 0xff])
+    ser.write(frame)
+    time.sleep(0.01)
+    frame = bytearray([SLAVE_ID, 6, 0, PH_ADDRESS, (ph_value >> 8) & 0xff, ph_value & 0xff])
+    ser.write(frame)
+    time.sleep(0.01)
