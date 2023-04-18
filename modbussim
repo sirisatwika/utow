@@ -1,4 +1,5 @@
-import serial
+import socket
+import struct
 import time
 
 # Define the Modbus slave ID and register addresses for flowrate and pH
@@ -6,13 +7,13 @@ SLAVE_ID = 1
 FLOWRATE_ADDRESS = 0
 PH_ADDRESS = 1
 
-# Define the Modbus RTU port and baudrate
-PORT = "/dev/ttyUSB0"
-BAUDRATE = 9600
+# Define the Modbus TCP IP address and port
+IP_ADDRESS = "127.0.0.1"
+PORT = 502
 
-# Open the Modbus RTU serial port
-ser = serial.Serial(port=PORT, baudrate=BAUDRATE, bytesize=8, parity='N', stopbits=1, xonxoff=0)
-ser.timeout = 1
+# Open a Modbus TCP connection to the slave device
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((IP_ADDRESS, PORT))
 
 # Simulate continuous Modbus data for flowrate and pH
 while True:
@@ -24,10 +25,16 @@ while True:
     flowrate_value = int(flowrate * 10)
     ph_value = int(ph * 10)
     
-    # Build the Modbus RTU frame for flowrate and pH data
-    frame = bytearray([SLAVE_ID, 6, 0, FLOWRATE_ADDRESS, (flowrate_value >> 8) & 0xff, flowrate_value & 0xff])
-    ser.write(frame)
-    time.sleep(0.01)
-    frame = bytearray([SLAVE_ID, 6, 0, PH_ADDRESS, (ph_value >> 8) & 0xff, ph_value & 0xff])
-    ser.write(frame)
+    # Build the Modbus TCP request frame for flowrate and pH data
+    transaction_id = 0
+    protocol_id = 0
+    length = 6
+    unit_id = SLAVE_ID
+    function_code = 6
+    flowrate_frame = struct.pack(">HH", FLOWRATE_ADDRESS, flowrate_value)
+    ph_frame = struct.pack(">HH", PH_ADDRESS, ph_value)
+    request_frame = struct.pack(">HHHBBH4s", transaction_id, protocol_id, length, unit_id, function_code, *flowrate_frame) + struct.pack(">BBH4s", unit_id, function_code, 4, ph_frame)
+    
+    # Send the Modbus TCP request frame to the slave device
+    sock.send(request_frame)
     time.sleep(0.01)
