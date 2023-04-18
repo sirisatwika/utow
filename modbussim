@@ -1,0 +1,33 @@
+import modbus_tk.defines as cst
+import modbus_tk.modbus as modbus
+import modbus_tk.modbus_rtu as modbus_rtu
+
+# Define the Modbus slave ID
+SLAVE_ID = 1
+
+# Define the Modbus register addresses for flowrate and pH
+FLOWRATE_ADDRESS = 0
+PH_ADDRESS = 1
+
+# Define the Modbus RTU port and baudrate
+PORT = "/dev/ttyUSB0"
+BAUDRATE = 9600
+
+# Create a Modbus RTU master
+master = modbus_rtu.RtuMaster(
+    modbus.SerialPort(PORT, BAUDRATE, bytesize=8, parity='N', stopbits=1, xonxoff=0)
+)
+master.set_timeout(5.0)
+
+# Start the Modbus RTU master
+master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, FLOWRATE_ADDRESS, output_value=100)
+master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, PH_ADDRESS, output_value=7.0)
+
+# Simulate Modbus data for flowrate and pH
+while True:
+    flowrate = 100.0  # Simulate flowrate data
+    ph = 7.0  # Simulate pH data
+    
+    # Write the flowrate and pH data to the Modbus registers
+    master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, FLOWRATE_ADDRESS, output_value=int(flowrate))
+    master.execute(SLAVE_ID, cst.WRITE_SINGLE_REGISTER, PH_ADDRESS, output_value=int(ph * 10))
