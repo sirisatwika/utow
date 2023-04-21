@@ -1,18 +1,13 @@
-from flask import Flask, jsonify
-import requests
 
-app = Flask(__name__)
+@app.route('/api/v1/gateway/name/getdevicedetails/all')
+@cross_origin()
+def getdevicedataall():
+    unique_device_names = set()
+    try:
+        deviceslist = response.json()['devices']
+        
 
-@app.route('/api/devices/info', methods=['GET'])
-def get_devices_info():
-    url = 'https://example.com/devices'
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        devices = response.json()['devices']
-        unique_device_names = set()
-
-        for device in devices:
+        for device in deviceslist:
             device_name = device['name']
             if device_name not in unique_device_names:
                 unique_device_names.add(device_name)
@@ -24,10 +19,7 @@ def get_devices_info():
                     'address': device['protocols']['modbus-tcp']['Address'],
                     'port': device['protocols']['modbus-tcp']['Port']
                 }
-
                 devices_info.append(device_info)
-
-        return jsonify({'devices': devices_info}), 200
-
-    else:
-        return jsonify({'error': 'Failed to fetch devices info.'}), 500
+	return str(unique_device_names)
+    except Exception as e:
+        return e
