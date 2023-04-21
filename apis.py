@@ -173,16 +173,88 @@ def getinactivecount():
 @cross_origin()
 def getdevicenames():
     try:
-        apiurl = "http://localhost:59880/api/v2/reading/all"
+        apiurl = "http://localhost:59881/api/v2/device/all"
         response = requests.get(apiurl)
-        devicelist = response.json()['readings']
+        devicelist = response.json()['devices']
         cnt = 0
+        devnameset = set({})
         for d in devicelist:
-            if d['deviceName'] == "Random-Integer-Device":
-                res = d['value']
-        return str(res)
+            devnameset.add(d['name'])
+        return str(devnameset)
     except Exception as e:
         return e
+
+@app.route('/api/v1/gateway/name/getdevicedetails/all')
+@cross_origin()
+def getdevicedataall():
+    unique_device_names = set()
+    devices_info = []
+    try:
+        apiurl = "http://localhost:59881/api/v2/device/all"
+        response = requests.get(apiurl)
+        deviceslist = response.json()['devices']
+        for device in deviceslist:
+            device_name = device['name']
+            if device_name not in unique_device_names:
+                unique_device_names.add(device_name)
+                status = ''
+                if devices['operatingState'] == "UP":
+                    status = 'online'
+                else:
+                    status = 'offline'
+		device_info = {
+                    'id': device['id'],
+                    'serviceName': device['serviceName'],
+                    'profileName': device['profileName'],
+                    'description':device['description'],
+                    'location' : 'Hyderabad',
+                    'associatedGateway' : 'Lenovo Gateway',
+                    'associatedGwID' : device['id'],
+                    'status' : status
+		
+                }
+                devices_info.append(device_info)
+        return str(devices_info)
+    except Exception as e:
+        return str(e), 500
+            
+#@app.route('/api/v1/gateway/telemetrydata/<devicename>')
+#@cross_origin()
+#def gettelemetrydata(devicename):
+#    try:
+#        apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(devicename)
+#        response = requests.get(apiurl)
+#        readingslist = response.json()['readings']
+#        print(type(readingslist))
+#        print(readingslist[0])
+#        r = []
+
+#	 curr_time = time.time_ns()
+        #print(curr_time)
+#        prev_time = datetime.now() - timedelta(seconds = 2)
+#        prev_ns = int(time.mktime(prev_time.timetuple()) * pow(10, 9))
+#        #print(prev_ns)
+#        apiurl = "http://localhost:59880/api/v2/event/start/"+ str(prev_ns)+"/end/"+ str(curr_time)
+#        response = requests.get(apiurl)
+        #print(response.json())
+#        events = response.json()['events']
+#        devnameset = set({})
+#        for e in events:
+#            devname =e['deviceName']
+#            devnameset.add(devname)
+        
+#        for rl in readingslist:
+#            resource_name = rl['resourceName']
+#            res = rl['value'] 
+#            res2 = float(res)
+#            print(res, type(res))
+#            num = '{0:.2f}'.format(res2)		
+#            print(num)
+#            r.append({ resource_name : num })    		   
+#            print(json.dumps(r))
+#        return json.dumps(r)
+#    except Exception as e:
+#        return e 
         
 @app.route('/api/v1/gateway/telemetrydata/<devicename>')
 @cross_origin()
@@ -193,17 +265,16 @@ def gettelemetrydata(devicename):
         readingslist = response.json()['readings']
         print(type(readingslist))
         print(readingslist[0])
-        r = []
-        for rl in readingslist:
-            resource_name = rl['resourceName']
-            res = rl['value'] 
-            res2 = float(res)
-            print(res, type(res))
-            num = '{0:.2f}'.format(res2)		
-            print(num)
-            r.append({ resource_name : num })    		   
-            print(json.dumps(r))
-        return json.dumps(r)
+        resource_name = readingslist[0]['resourceName']
+        res = readingslist[0]['value'] 
+        res2 = float(res)
+        print(res, type(res))
+        num = '{0:.2f}'.format(res2)
+        print(num)
+        r = {
+        resource_name : num
+        }
+        return str(r)
     except Exception as e:
         return e
 
