@@ -2,8 +2,9 @@
 @cross_origin()
 def getdevicedataall():
     unique_device_names = set()
+    devices_info = []
     try:
-    	apiurl = "http://localhost:59881/api/v2/device/all"
+        apiurl = "http://localhost:59881/api/v2/device/all"
         response = requests.get(apiurl)
         deviceslist = response.json()['devices']
         for device in deviceslist:
@@ -19,6 +20,6 @@ def getdevicedataall():
                     'port': device['protocols']['modbus-tcp']['Port']
                 }
                 devices_info.append(device_info)
-	return str(unique_device_names)
+        return str(devices_info)
     except Exception as e:
-        return e
+        return str(e), 500
