@@ -1,12 +1,11 @@
-
 @app.route('/api/v1/gateway/name/getdevicedetails/all')
 @cross_origin()
 def getdevicedataall():
     unique_device_names = set()
     try:
+    	apiurl = "http://localhost:59881/api/v2/device/all"
+        response = requests.get(apiurl)
         deviceslist = response.json()['devices']
-        
-
         for device in deviceslist:
             device_name = device['name']
             if device_name not in unique_device_names:
