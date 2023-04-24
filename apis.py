@@ -138,6 +138,7 @@ def getactivecount():
         for e in events:
             devname =e['deviceName']
             devnameset.add(devname)
+            print('active' + devname)
         return str(len(devnameset))
     except Exception as e:
         return e
@@ -163,6 +164,7 @@ def getinactivecount():
         for e in events:
             devname =e['deviceName']
             devnameset.add(devname)
+            
         activecnt = len(devnameset)
         cnt = gatewaycount_prov - activecnt
         return str(cnt)
@@ -198,11 +200,72 @@ def getdevicedataall():
             if device_name not in unique_device_names:
                 unique_device_names.add(device_name)
                 status = ''
-                if devices['operatingState'] == "UP":
+                address = ''
+                port = ''
+                createdtime = device['created']
+		time_in_sec = createdtime / pow(10,9)
+		dt = datetime.fromtimestamp(time_in_sec)
+		form_dt = dt.strftime('%Y-%m-%d %H:%M:%S.%f')
+                
+                if device['operatingState'] == "UP":
                     status = 'online'
                 else:
                     status = 'offline'
 		device_info = {
+                    'gatewayid': device['id'],
+                    'gatewayname':'Lenovo Gateway',
+                    'ipaddress': device.get('protocols',{}).get('modbus-tcp',{}).get('Address',''),
+                    'port': device.get('protocols',{}).get('modbus-tcp',{}).get('Port',''), 
+                    'location' : 'Hyderabad',
+                    'MAC address': '00:25:96:FF:FE:12:34:56',
+                    'serialnumber': '748676',
+                    'manufacturermodel': 'LT',
+                    'profileName': device['profileName'],
+                    'serviceName': device['serviceName'],
+                    'description':device['description'],
+                    'devicestatus' : status,
+                    'provisonedstatus':'',
+                    'provisionedmethod':'',
+                    'ActiveInactive':'',
+                    'Lastcomm':'',
+                    'Certstatus':'',
+                    'OSVersion':'Ubuntu 22.04',
+                    'OSstatus':'TLS 1.4/ SSL- 1.0',
+                    'encryptdecrypt':'Active',
+                    'Firmwarestatus':'23.45.67',
+                    'Firmwareversion':'Active',
+                    'timecomm_create' : form_dt,
+                    'time_modi' : device['modified']
+                }
+                devices_info.append(device_info)
+        return str(devices_info)
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/api/v1/gateway/name/getgatewaydetails/all')
+@cross_origin()
+def getgatewaydataall():
+    unique_device_names = set()
+    devices_info = []
+    try:
+        apiurl = "http://localhost:59881/api/v2/device/all"
+        response = requests.get(apiurl)
+        deviceslist = response.json()['devices']
+        for device in deviceslist:
+            device_name = device['name']
+            if device_name not in unique_device_names:
+                unique_device_names.add(device_name)
+                status = ''
+                address = ''
+                port = ''
+                if device['operatingState'] == "UP":
+                    status = 'online'
+                else:
+                    status = 'offline'
+                #if device['protocols']['modbus-tcp']['Address'] == 'true':
+                 #   address = device['protocols']['modbus-tcp']['Address']
+                  #  port = device['protocols']['modbus-tcp']['Port']
+                device_info = {
                     'id': device['id'],
                     'serviceName': device['serviceName'],
                     'profileName': device['profileName'],
@@ -210,7 +273,9 @@ def getdevicedataall():
                     'location' : 'Hyderabad',
                     'associatedGateway' : 'Lenovo Gateway',
                     'associatedGwID' : device['id'],
-                    'status' : status
+                    'status' : status,
+                    'address': device.get('protocols',{}).get('modbus-tcp',{}).get('Address',''),
+                    'port': device.get('protocols',{}).get('modbus-tcp',{}).get('Port','') 
 		
                 }
                 devices_info.append(device_info)
