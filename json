@@ -1,24 +1,278 @@
-{"apiVersion":"v2",
-"statusCode":200,
-"totalCount":26,
-"devices":[
-{"created":1681807557406,
-"modified":1681807557406,
-"id":"f795ee7b-3931-424d-8596-df74d9e41f52",
-"name":"flowratedemo",
-"description":"modbus flow demo"
-,"adminState":"UNLOCKED",
-"operatingState":"UP",
-"labels":["flowrate"," modbus"],
-"serviceName":"device-modbus",
-"profileName":"flowratedemo",
-"protocols":{
-"modbus-tcp":{
-"Address":"172.31.10.243",
-"IdleTimeout":"2000",
-"Port":"1502",
-"Timeout":"1000",
-{"created":1681795847349,"modified":1681795847349,"id":"e7984aa2-8f73-4059-ad67-4158fbc5882d",
-"name":"MQTT-test-device","description":"MQTT device is created for test purpose","adminState":"UNLOCKED",
-"operatingState":"UP","labels":["MQTT","test"],"serviceName":"device-mqtt","profileName":"Test-Device-MQTT-Profile",
-"protocols":{"mqtt":{"CommandTopic":"CommandTopic"}}}
+import React from 'react'
+import ReactApexChart from "react-apexcharts";
+import {useState, useEffect} from "react";
+import axios from "axios";
+
+function Subnets(){
+	const series = [{
+        name: 'Thermal Sensor',
+        data: [30, 40, 35, 20]
+     	},{
+        name: 'Voltage Sensor',
+        data: [40, 25, 30, 33]
+      	},
+      	{
+        name: 'Pressure Sensor',
+        data: [20, 24, 20, 26]
+      	}];
+      
+	const options = {
+        colors: ['#5614B0', '#89253e', '#fdbb2d'],
+        chart: {
+          height: 350,
+          type: 'bar',
+          stacked: true,
+          toolbar: {
+            show: false
+          },
+        },
+        grid: {
+          show: true,
+          xaxis: {
+            lines: {
+              show: false
+            }
+          },
+          yaxis: {
+            lines: {
+              show: false
+            }
+          },
+        },
+        dataLabels: {
+          enabled: true,
+          position: 'center',
+          style: {
+              fontSize: '10px',
+              fontWeight: 600
+          }
+      },
+        plotOptions: {
+          bar: {
+            columnWidth: '50%',
+            distributed: false,
+            dataLabels: {
+              enabled: true,
+              total: {
+                enabled: true,
+                style: {
+                  fontSize: '10px',
+                  fontWeight: 600
+                }
+              },
+              position: 'center',
+              style: {
+                fontSize: '10px',
+                fontWeight: 500
+              }
+            },
+
+          },
+        },
+        legend: {
+          show: true,
+          position: 'top',
+          fontSize: '11px',
+        },
+        xaxis: {
+          categories: ['Gateway-01', 'Gateway-02', 'Gateway-03', 'Gateway-04'],
+          labels: {
+            show: true,
+            hideOverlappingLabels: true,
+            trim: true,
+            style: {
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: 500,
+            },
+          },
+          title: {
+            text: 'Gateways',
+            offsetY: 75,
+            style: {
+              color: '#004a87',
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: '600',
+            },
+          },
+        },
+        yaxis: {
+          min: 0,
+          max: 100,
+          tickAmount: 2,
+          show: true,
+          labels: {
+            show: true,
+            align: 'right',
+            minWidth: 0,
+            style: {
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: 500,
+            },
+          },
+          axisBorder: {
+            show: true,
+            color: '#ccc',
+          },
+          title: {
+            text: 'Values',
+            style: {
+              color: '#004a87',
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: '600',
+            },
+          },
+
+        },
+      }
+
+return (
+	 <div id="chart">
+        <ReactApexChart options={this.state.options} series={this.state.series} type="bar" 	height={210} />
+      </div>	
+	)
+
+}export default Subnets;
+
+
+/*class Subnets extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      series: [{
+        name: 'Thermal Sensor',
+        data: [30, 40, 35, 20]
+      }, {
+        name: 'Voltage Sensor',
+        data: [40, 25, 30, 33]
+      },
+      {
+        name: 'Pressure Sensor',
+        data: [20, 24, 20, 26]
+      }],
+      options: {
+        colors: ['#5614B0', '#89253e', '#fdbb2d'],
+        chart: {
+          height: 350,
+          type: 'bar',
+          stacked: true,
+          toolbar: {
+            show: false
+          },
+        },
+        grid: {
+          show: true,
+          xaxis: {
+            lines: {
+              show: false
+            }
+          },
+          yaxis: {
+            lines: {
+              show: false
+            }
+          },
+        },
+        dataLabels: {
+          enabled: true,
+          position: 'center',
+          style: {
+              fontSize: '10px',
+              fontWeight: 600
+          }
+      },
+        plotOptions: {
+          bar: {
+            columnWidth: '50%',
+            distributed: false,
+            dataLabels: {
+              enabled: true,
+              total: {
+                enabled: true,
+                style: {
+                  fontSize: '10px',
+                  fontWeight: 600
+                }
+              },
+              position: 'center',
+              style: {
+                fontSize: '10px',
+                fontWeight: 500
+              }
+            },
+
+          },
+        },
+        legend: {
+          show: true,
+          position: 'top',
+          fontSize: '11px',
+        },
+        xaxis: {
+          categories: ['Gateway-01', 'Gateway-02', 'Gateway-03', 'Gateway-04'],
+          labels: {
+            show: true,
+            hideOverlappingLabels: true,
+            trim: true,
+            style: {
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: 500,
+            },
+          },
+          title: {
+            text: 'Gateways',
+            offsetY: 75,
+            style: {
+              color: '#004a87',
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: '600',
+            },
+          },
+        },
+        yaxis: {
+          min: 0,
+          max: 100,
+          tickAmount: 2,
+          show: true,
+          labels: {
+            show: true,
+            align: 'right',
+            minWidth: 0,
+            style: {
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: 500,
+            },
+          },
+          axisBorder: {
+            show: true,
+            color: '#ccc',
+          },
+          title: {
+            text: 'Values',
+            style: {
+              color: '#004a87',
+              fontSize: '10px',
+              fontFamily: 'Raleway, sans-serif',
+              fontWeight: '600',
+            },
+          },
+
+        },
+      },
+    };
+  }
+
+  render() {
+    return (
+      <div id="chart">
+        <ReactApexChart options={this.state.options} series={this.state.series} type="bar" height={210} />
+      </div>
+    )
+  }
+}*/
