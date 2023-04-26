@@ -42,22 +42,6 @@ function LineChart() {
     {
       name: "Power",
       data: [10, 9, 12, 11, 15, 13, 8]
-    },
-    {
-      name: "Pressure",
-      data: [8, 10, 14, 13, 11, 9, 12]
-    },
-    {
-      name: "Weight",
-      data: [13, 9, 10, 14, 10, 15, 12]
-    },
-    {
-      name: "Rules Executed",
-      data: [9, 12, 10, 13, 11, 8, 14]
-    },
-    {
-      name: "Analytical Model Performance",
-      data: [13, 8, 11, 14, 10, 9, 12]
     }
   ];
 
@@ -187,10 +171,7 @@ function LineChart() {
                 <em>None</em>
               </MenuItem>
               <MenuItem value={10}>Gateway-01</MenuItem>
-              <MenuItem value={20}>Gateway-02</MenuItem>
-              <MenuItem value={30}>Gateway-03</MenuItem>
-              <MenuItem value={40}>Gateway-04</MenuItem>
-            </Select>
+              </Select>
           </FormControl>
         </div>
       </div>
@@ -201,3 +182,26 @@ function LineChart() {
   )
 }
 export default LineChart;
+
+for the above code the below api has been written help in changing the hardcoded values with the values coming from API
+
+@app.route('/api/v1/gateway/data/linegraph/<devicename>')
+@cross_origin()
+def getdataline(devicename):
+    try:
+        apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(devicename)
+        response = requests.get(apiurl)
+        readingslist = response.json()['readings']
+        lst = []
+        unit = readingslist[0]['units']
+        for i in readingslist:
+            res = i['value']
+            res2 = float(res)
+            num = '{0:.2f}'.format(res2)
+            lst.append(num)
+        lst.append(unit)
+        r = { devicename : lst }
+        print("r " + str(r))
+        return json.dumps(r)
+    except Exception as e:
+        return str(e)
