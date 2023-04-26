@@ -1,0 +1,35 @@
+import React, { useState, useEffect } from 'react';
+
+function LineGraph(props) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/v1/gateway/data/linegraph/${props.devicename}`);
+      const result = await response.json();
+      setData(result[props.devicename]);
+    };
+
+    fetchData();
+  }, [props.devicename]);
+
+  return (
+    <div>
+      {data.length > 0 ? (
+        <div>
+          <h2>{props.devicename}</h2>
+          <ul>
+            {data.slice(0, -1).map((value, index) => (
+              <li key={index}>{value}</li>
+            ))}
+          </ul>
+          <p>Unit: {data[data.length - 1]}</p>
+        </div>
+      ) : (
+        <p>Loading data...</p>
+      )}
+    </div>
+  );
+}
+
+export default LineGraph;
