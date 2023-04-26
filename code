@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
@@ -7,10 +7,22 @@ import Select from '@mui/material/Select';
 import DatePicker from "react-datepicker";
 import "../datacollection/telementrydata/datepicker.css";
 
-function LineChart() {
-    
+function LineChart(props) {
     
         
+    const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`/api/v1/gateway/data/linegraph/${props.devicename}`);
+      const result = await response.json();
+      setData(result[props.devicename]);
+    };
+
+    fetchData();
+  }, [props.devicename]);
+  
+  
   //Selct Gateway Dropdown
   const [selectgateway, setgateway] = React.useState('');
   const gatewayhandleChange = (event) => {
@@ -23,27 +35,9 @@ function LineChart() {
 
   //For Line chart series options
   const series = [
-    {
-      name: "Temperature",
-      data: [9, 12, 8.5, 12, 14, 10, 9]
-    },
-    {
-      name: "Speed",
-      data: [12, 11, 14, 12, 10, 13, 13]
-    },
-    {
-      name: "Frequency",
-      data: [8, 9, 11, 13, 15, 12, 9]
-    },
-    {
-      name: "Humidity",
-      data: [9, 12, 8, 10, 14, 13, 8]
-    },
-    {
-      name: "Power",
-      data: [10, 9, 12, 11, 15, 13, 8]
-    }
-  ];
+    props.devicename,
+    data
+    ];
 
 
   //For Line chart options
@@ -171,7 +165,10 @@ function LineChart() {
                 <em>None</em>
               </MenuItem>
               <MenuItem value={10}>Gateway-01</MenuItem>
-              </Select>
+              <MenuItem value={20}>Gateway-02</MenuItem>
+              <MenuItem value={30}>Gateway-03</MenuItem>
+              <MenuItem value={40}>Gateway-04</MenuItem>
+            </Select>
           </FormControl>
         </div>
       </div>
@@ -182,26 +179,3 @@ function LineChart() {
   )
 }
 export default LineChart;
-
-for the above code the below api has been written help in changing the hardcoded values with the values coming from API
-
-@app.route('/api/v1/gateway/data/linegraph/<devicename>')
-@cross_origin()
-def getdataline(devicename):
-    try:
-        apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(devicename)
-        response = requests.get(apiurl)
-        readingslist = response.json()['readings']
-        lst = []
-        unit = readingslist[0]['units']
-        for i in readingslist:
-            res = i['value']
-            res2 = float(res)
-            num = '{0:.2f}'.format(res2)
-            lst.append(num)
-        lst.append(unit)
-        r = { devicename : lst }
-        print("r " + str(r))
-        return json.dumps(r)
-    except Exception as e:
-        return str(e)
