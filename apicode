@@ -1,32 +1,30 @@
-from influxdb import InfluxDBClient
-import json
 
-# connect to InfluxDB
-client = InfluxDBClient(host='localhost', port=8086)
-
-# set the database to use
-client.switch_database('mydb')
-
-# query the data
-query = 'SELECT value FROM readings WHERE device_name = {}'.format(devicename)
-result = client.query(query)
-
-# process the data
-lst = []
-for point in result.get_points():
-    res = point['value']
-    res2 = float(res)
-    num = '{0:.2f}'.format(res2)
-    lst.append(num)
-
-# add the unit to the list
-unit_query = 'SELECT units FROM readings WHERE device_name = {} LIMIT 1'.format(devicename)
-unit_result = client.query(unit_query)
-unit = list(unit_result.get_points())[0]['units']
-lst.append(unit)
-
-# create the response dictionary
-r = { devicename : lst }
-
-# return the response as JSON
-return json.dumps(r)
+@app.route('/api/v1/gateway/data/linegraph/<devicename>')
+@cross_origin()
+def getdataline(devicename):
+    try:
+        # connect to InfluxDB
+	client = InfluxDBClient(host='localhost', port=8086)
+	# set the database to use
+	client.switch_database('sensors')
+	# query the data
+	query = 'SELECT value FROM device_name = {}'.format(devicename)
+	result = client.query(query)
+	# process the data
+	lst = []
+	for point in result.get_points():
+	    res = point['value']
+	    res2 = float(res)
+	    num = '{0:.2f}'.format(res2)
+	    lst.append(num)
+	# add the unit to the list
+	unit_query = 'SELECT units FROM device_name = {} LIMIT 1'.format(devicename)
+	unit_result = client.query(unit_query)
+	unit = list(unit_result.get_points())[0]['units']
+	lst.append(unit)
+	# create the response dictionary
+	r = { devicename : lst }
+	# return the response as JSON
+	return json.dumps(r)
+    except Exception as e:
+        return str(e)
