@@ -1,35 +1,32 @@
-import React, { useState, useEffect } from 'react';
+from influxdb import InfluxDBClient
+import json
 
-function LineGraph(props) {
-  const [data, setData] = useState([]);
+# connect to InfluxDB
+client = InfluxDBClient(host='localhost', port=8086)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(`/api/v1/gateway/data/linegraph/${props.devicename}`);
-      const result = await response.json();
-      setData(result[props.devicename]);
-    };
+# set the database to use
+client.switch_database('mydb')
 
-    fetchData();
-  }, [props.devicename]);
+# query the data
+query = 'SELECT value FROM readings WHERE device_name = {}'.format(devicename)
+result = client.query(query)
 
-  return (
-    <div>
-      {data.length > 0 ? (
-        <div>
-          <h2>{props.devicename}</h2>
-          <ul>
-            {data.slice(0, -1).map((value, index) => (
-              <li key={index}>{value}</li>
-            ))}
-          </ul>
-          <p>Unit: {data[data.length - 1]}</p>
-        </div>
-      ) : (
-        <p>Loading data...</p>
-      )}
-    </div>
-  );
-}
+# process the data
+lst = []
+for point in result.get_points():
+    res = point['value']
+    res2 = float(res)
+    num = '{0:.2f}'.format(res2)
+    lst.append(num)
 
-export default LineGraph;
+# add the unit to the list
+unit_query = 'SELECT units FROM readings WHERE device_name = {} LIMIT 1'.format(devicename)
+unit_result = client.query(unit_query)
+unit = list(unit_result.get_points())[0]['units']
+lst.append(unit)
+
+# create the response dictionary
+r = { devicename : lst }
+
+# return the response as JSON
+return json.dumps(r)
