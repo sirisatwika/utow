@@ -8,9 +8,8 @@ import DatePicker from "react-datepicker";
 import "../datacollection/telementrydata/datepicker.css";
 
 function LineChart(props) {
-    
         
-    const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,12 +34,10 @@ function LineChart(props) {
 
   //For Line chart series options
   const series = [
-    props.devicename,
-    data
+   {name: props.devicename,
+    data : data.map(item => item.value)
+    }
     ];
-
-
-  //For Line chart options
 
   const chartOptions = {
     chart: {
@@ -166,9 +163,7 @@ function LineChart(props) {
               </MenuItem>
               <MenuItem value={10}>Gateway-01</MenuItem>
               <MenuItem value={20}>Gateway-02</MenuItem>
-              <MenuItem value={30}>Gateway-03</MenuItem>
-              <MenuItem value={40}>Gateway-04</MenuItem>
-            </Select>
+              </Select>
           </FormControl>
         </div>
       </div>
