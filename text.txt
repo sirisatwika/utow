@@ -1,25 +1,9 @@
-cat: can't open '/tmp/edgex/secrets/security-proxy-setup/kong-admin-jwt': No such file or directory
-flag needs an argument: -jwt
-Usage of adduser:
-  -algorithm string
-    	Algorithm used for signing the JWT, RS256 or ES256
-  -client_id string
-    	Optional manually-specified OAuth2 client_id.
-  -client_secret string
-    	Optional manually-specified OAuth2 client_secret.
-  -confdir string
-    	
-  -group string
-    	Group to which the user belongs, defaults to 'gateway-group' (default "gateway-group")
-  -id string
-    	ID to use for linkage with JWT claim (usually the 'iss' field)
-  -jwt string
-    	The JWT for use when accessing the Kong Admin API
-  -public_key string
-    	Public key (in PEM format) used to validate the JWT.
-  -redirect_uris string
-    	OAuth2 redirect URL for browser-based users (default: https://localhost) (default "https://localhost")
-  -token-type string
-    	Type of token to create: jwt (default "jwt")
-  -user string
-    	Username of the user to add
+Object { CarbondioxideSensor: (2) […] }
+
+CarbondioxideSensor: Array [ "60", "1000" ]
+
+0: "60"
+
+1: "1000"
+
+length: 2
