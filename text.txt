@@ -1,3 +1,50 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function MyComponent() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let values = null;
+        for (let i = 0; i < 1; i++) {
+          axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor')
+            .then((response) => {
+              console.log(response.data);
+              const resvalues = response.data.CarbondioxideSensor;
+              if (resvalues.length >= 2) {
+                values = [resvalues[0], resvalues[1]];
+                console.log('Minimum value:', resvalues[0]);
+                console.log('Maximum value:', resvalues[1]);
+                setData(values);
+                console.log('Data set to:', values);
+              } else {
+                console.error('Unexpected response format.');
+              }
+            });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      <h1>Data:</h1>
+      <ul>
+        {data.map((value, index) => (
+          <li key={index}>{value}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+
 
     let [data, setData] = useState([]);
 	let [devicesn, setDevicesn] = useState([]);
