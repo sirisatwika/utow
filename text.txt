@@ -1,4 +1,4 @@
-Object { CarbondioxideSensor: (2) […] }
+X3Object { CarbondioxideSensor: (2) […] }
 
 CarbondioxideSensor: Array [ "60", "1000" ]
 
@@ -42,3 +42,44 @@ def getdataminmax(devicename):
         return json.dumps(r)
     except Exception as e:
         return str(e)
+
+let min = null;
+let max = null;
+
+axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor')
+  .then((response) => {
+    console.log(response.data);
+    const values = response.data.CarbondioxideSensor;
+    if (values.length >= 2) {
+      min = values[0];
+      max = values[1];
+      console.log('Minimum value:', min);
+      console.log('Maximum value:', max);
+    } else {
+      console.error('Unexpected response format.');
+    }
+  })
+  .catch((error) => {
+    console.error('Error retrieving min/max values:', error);
+  });
+
+
+let min = null;
+let max = null;
+
+axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor')
+  .then((response) => {
+    console.log(response.data);
+    const values = response.data.CarbondioxideSensor;
+    if (values.length >= 2) {
+      min = values[0];
+      max = values[1];
+      console.log('Minimum value:', min);
+      console.log('Maximum value:', max);
+    } else {
+      console.error('Unexpected response format.');
+    }
+  })
+  .catch((error) => {
+    console.error('Error retrieving min/max values:', error);
+  });
