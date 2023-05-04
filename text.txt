@@ -1,2 +1,2 @@
-Starting /device-snmp-go -cp=consul.http://edgex-core-consul:8500 --registry --confdir=/res ...
-/edgex-init/ready_to_run_wait_install.sh: exec: line 41: /device-snmp-go: not found
+cat: can't open '/tmp/edgex/secrets/security-proxy-setup/kong-admin-jwt': No such file or directory
+flag needs an argument: -jwt
