@@ -83,3 +83,23 @@ axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor'
   .catch((error) => {
     console.error('Error retrieving min/max values:', error);
   });
+
+
+let values = null;
+
+axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor')
+  .then((response) => {
+    console.log(response.data);
+    const responseValues = response.data.CarbondioxideSensor;
+    if (responseValues.length >= 2) {
+      values = [responseValues[0], responseValues[1]];
+      console.log('Minimum value:', values[0]);
+      console.log('Maximum value:', values[1]);
+    } else {
+      console.error('Unexpected response format.');
+    }
+    setData(values);
+  })
+  .catch((error) => {
+    console.error('Error retrieving min/max values:', error);
+  });
