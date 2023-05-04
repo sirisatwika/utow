@@ -1,0 +1,16 @@
+import requests
+import json
+from datetime import datetime, timedelta
+import time
+from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
+from createcacert import createX509
+from createsymkey import createSymKey
+from influxdb import InfluxDBClient
+from flask_httpauth import HTTPBasicAuth
+
+# creating a Flask app
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+auth = HTTPBasicAuth()
