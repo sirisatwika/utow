@@ -1,3 +1,67 @@
+
+    let [data, setData] = useState([]);
+	let [devicesn, setDevicesn] = useState([]);
+	
+    useEffect(() => {
+    const fetchData = async()=>{
+    	//axios.get('http://localhost:5000/api/v1/gateway/name/getdevicenames/all')
+	//	.then(response =>{
+	//	console.log(response.data);
+	//	setDevicesn(response.data);
+	//	})
+	//	.catch(console.error);
+         try{
+         let min = null;
+         let max = null;
+     	 let values = null;
+         	for (let i = 0; i < 1; i++) {
+                //for (let i = 0; i < devicesn.length; i++) {
+                    axios.get('http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor')
+		  .then((response) => {
+		    console.log(response.data);
+		    const resvalues = response.data.CarbondioxideSensor;
+		    
+		    if (resvalues.length >= 2) {
+		      values = [resvalues[0], resvalues[1]];
+		      console.log('Minimum value:', resvalues[0]);
+		      console.log('Maximum value:', resvalues[1]);
+		    } else {
+		      console.error('Unexpected response format.');
+		    }
+		  }); 
+		  setData(values);
+		  console.log("values set");
+		  console.log(data);      
+                } 
+            } catch (error) {
+                console.error(error);
+            }
+            };
+            fetchData();
+        }, []); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 X3Object { CarbondioxideSensor: (2) […] }
 
 CarbondioxideSensor: Array [ "60", "1000" ]
