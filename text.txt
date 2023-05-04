@@ -22,3 +22,23 @@ let value = "";
                    // v.push({min: resourceName, devvalue : value });
                     setData(data);
                     });    
+		    
+
+@app.route('/api/v1/gateway/data/minmax/<devicename>')
+@cross_origin()
+def getdataminmax(devicename):
+    try:
+        apiurl = "http://localhost:59881/api/v2/deviceprofile/name/"+str(devicename)
+        response = requests.get(apiurl)
+        pro = response.json()['profile']
+        lst = []
+        maximum = pro['deviceResources'][0]['properties']['maximum']
+        minimum = pro['deviceResources'][0]['properties']['minimum']
+        lst.append(minimum)
+        lst.append(maximum)
+        r = {
+        devicename : lst
+        }
+        return json.dumps(r)
+    except Exception as e:
+        return str(e)
