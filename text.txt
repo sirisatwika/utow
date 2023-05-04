@@ -7,3 +7,18 @@ CarbondioxideSensor: Array [ "60", "1000" ]
 1: "1000"
 
 length: 2
+
+
+let value = "";
+   let v = [];
+                    //let value = "";
+                    axios.get(`http://localhost:5000/api/v1/gateway/data/minmax/CarbondioxideSensor`)
+                    .then((response) => {
+                    console.log(response.data);
+                    value = Object.values(response.data.CarbondioxideSensor[0]);
+		    console.log(value);                   
+                   // resourceName = (response.data.min);
+                    //value = Object.values(response.data);
+                   // v.push({min: resourceName, devvalue : value });
+                    setData(data);
+                    });    
