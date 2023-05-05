@@ -1,16 +1,187 @@
-import requests
-import json
-from datetime import datetime, timedelta
-import time
-from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
-from createcacert import createX509
-from createsymkey import createSymKey
-from influxdb import InfluxDBClient
-from flask_httpauth import HTTPBasicAuth
+import React, { useState } from "react";
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Checkbox from '@mui/material/Checkbox';
+import MUIDataTable from "mui-datatables";
 
-# creating a Flask app
-app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-auth = HTTPBasicAuth()
+import DatePicker from "react-datepicker";
+import "./datepicker.css";
+import "../../configuration/devicetable.css";
+
+//For Select Dropdown options
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+const names = [
+    'Sensor-01',
+    'Sensor-02',
+    'Sensor-03',
+    'Sensor-04',
+    'Sensor-05',
+];
+function getStyles(name, personName, theme) {
+    return {
+        fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+}
+
+
+//For table options 
+
+const options = {
+    responsive: "standard",
+    textLabels: {
+        toolbar: {
+            search: "Search",
+            downloadCsv: "Download CSV",
+            print: "Print",
+            viewColumns: "View Columns",
+            filterTable: "Filter Table",
+        },
+        filter: {
+            all: "All",
+            title: "Filters",
+            reset: "Reset",
+        },
+    }
+}
+
+const columns = [
+    {
+        name: "Title One",
+        options: {
+            colspan: true,
+            filter: true,
+            sort: true,
+            filterOptions: { fullWidth: true }
+        }
+    },
+    {
+        name: "Title Two",
+        options: {
+            filter: false,
+        },
+    },
+    {
+        name: "Title Three",
+        options: {
+            filter: false,
+        },
+    },
+    {
+        name: "Title Four",
+        options: {
+            filter: false,
+        },
+    },
+    {
+        name: "Title Five",
+        options: {
+            filter: false,
+        },
+    },
+];
+const data = [
+    ['2557267636', 'Lenovo Gateway', '276397', 'temp', '192.168.45.34'],
+    ['2557267636', 'windows', '637827832', 'temp', '192.168.45.34'],
+    ['2557267636', 'Lenovo Gateway', '276397', 'temp', '192.168.45.34'],
+    ['2557267636', 'windows', '276397', 'temp', '192.168.45.34'],
+    ['2557267636', 'Lenovo Gateway', '276397', 'temp', '192.168.45.34'],
+];
+
+
+
+function TelementaryTabledata() {
+
+
+    //Selct Gateway Dropdown
+    const [selectgateway, setgateway] = React.useState('');
+    const gatewayhandleChange = (event) => {
+        setgateway(event.target.value);
+    };
+
+    //Selct Device/Sensor Dropdown    
+    const theme = useTheme();
+    const [personName, setPersonName] = React.useState([]);
+    const handleChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setPersonName(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    //Date Range Picker options
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [startDate, endDate] = dateRange;
+
+    return (
+        <React.Fragment>
+            <div className="secondwrapper">
+                <div className="dropdownselect">
+                    <div className="selectdropdown">
+                        <DatePicker
+                            selectsRange={true}
+                            startDate={startDate}
+                            endDate={endDate}
+                            onChange={(update) => {
+                                setDateRange(update);
+                            }}
+                            isClearable={true}
+                            showIcon
+                            placeholderText="Select Start & End Date"
+                            closeOnScroll={true}
+                        />
+                    </div>
+                    
+                    <div className="selectdropdown">
+                        <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
+                            <InputLabel id="demo-select-small">Select Gateway</InputLabel>
+                            <Select labelId="demo-select-small" id="demo-select-small" value={selectgateway} label="Select Gateway" onChange={gatewayhandleChange}>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={10}>Gateway-01</MenuItem>
+                                <MenuItem value={20}>Gateway-02</MenuItem>
+                                <MenuItem value={30}>Gateway-03</MenuItem>
+                                <MenuItem value={40}>Gateway-04</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="selectdropdown">
+                        <FormControl sx={{ m: 1, width: 170 }} size="small">
+                            <InputLabel id="demo-multiple-name-label">Device/Sensor Name</InputLabel>
+                            <Select labelId="demo-multiple-name-label" id="demo-multiple-name" multiple value={personName} onChange={handleChange} input={<OutlinedInput label="Device/Sensor Name" />} renderValue={(selected) => selected.join(', ')} MenuProps={MenuProps}>
+                                {names.map((name) => (
+                                    <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+                                        <Checkbox checked={personName.indexOf(name) > -1} />
+                                        {name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+                </div>
+                <div className="table_wrapper devicetable">
+                    <MUIDataTable data={data} columns={columns} options={options} />
+                </div>
+            </div>
+        </React.Fragment>
+    )
+}
+export default TelementaryTabledata;
