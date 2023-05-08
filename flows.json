@@ -1,0 +1,5049 @@
+[
+    {
+        "id": "099844356f08c366",
+        "type": "tab",
+        "label": "Influx DB",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2a80265fe88b09fb",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 3",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 180,
+        "wires": [
+            [
+                "c430752967dc2f88",
+                "1e1a0641193a87d3"
+            ]
+        ]
+    },
+    {
+        "id": "70f7ca5058b5c549",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Flowratefun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 120,
+        "wires": [
+            [
+                "5d67a9ad3d5512e3",
+                "b38eae5ea3cd0f35"
+            ]
+        ]
+    },
+    {
+        "id": "5d67a9ad3d5512e3",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "FlowrateSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/FlowrateSensor/flowrate",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 580,
+        "y": 120,
+        "wires": [
+            [
+                "b58964ae69af6425"
+            ]
+        ]
+    },
+    {
+        "id": "b58964ae69af6425",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 37",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "04ad685f024c2da7",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 120,
+        "wires": [
+            [
+                "70f7ca5058b5c549"
+            ]
+        ]
+    },
+    {
+        "id": "c430752967dc2f88",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 38",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b38eae5ea3cd0f35",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 39",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1e1a0641193a87d3",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "flowrate-out",
+        "measurement": "FlowrateSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 810,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "72aa1b38e56b8442",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "FlowrateSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/FlowrateSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 440,
+        "y": 180,
+        "wires": [
+            [
+                "2a80265fe88b09fb",
+                "1bb484e4d1785845"
+            ]
+        ]
+    },
+    {
+        "id": "9985643156021226",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 180,
+        "wires": [
+            [
+                "72aa1b38e56b8442"
+            ]
+        ]
+    },
+    {
+        "id": "1bb484e4d1785845",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 43",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "acad2bb8a63fa685",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "flowrate",
+        "query": "select * from FlowrateSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 400,
+        "y": 260,
+        "wires": [
+            [
+                "e48d81ab2df27d3c"
+            ]
+        ]
+    },
+    {
+        "id": "d71117caf5d52cfd",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 260,
+        "wires": [
+            [
+                "acad2bb8a63fa685"
+            ]
+        ]
+    },
+    {
+        "id": "e48d81ab2df27d3c",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 44",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "0003f6d338b29558",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Vibration-Velocityfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-40, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 360,
+        "wires": [
+            [
+                "f90cbbb1b678a134",
+                "17f963a1a4787b78"
+            ]
+        ]
+    },
+    {
+        "id": "f90cbbb1b678a134",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VibrationSensor-v",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-v",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 670,
+        "y": 360,
+        "wires": [
+            [
+                "28de861c1024b2dc"
+            ]
+        ]
+    },
+    {
+        "id": "28de861c1024b2dc",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 45",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "8feabee82f1201c6",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Vibration-Acceleartionfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 420,
+        "wires": [
+            [
+                "b627bb03024c64e0",
+                "b47d7010fb34bb7e"
+            ]
+        ]
+    },
+    {
+        "id": "b627bb03024c64e0",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VibrationSensor-a",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-a",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 670,
+        "y": 440,
+        "wires": [
+            [
+                "0bbd2708fb9a0b4c"
+            ]
+        ]
+    },
+    {
+        "id": "0bbd2708fb9a0b4c",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 46",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a8841fcf1b051fae",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Vibration-Displacementfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomFloat(0, 1000)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 480,
+        "wires": [
+            [
+                "634b35d45c772d7a",
+                "53eba7f31cdf3ca8"
+            ]
+        ]
+    },
+    {
+        "id": "634b35d45c772d7a",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VibrationSensor-d",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-d",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 670,
+        "y": 520,
+        "wires": [
+            [
+                "b9b0d4b299a74b2d"
+            ]
+        ]
+    },
+    {
+        "id": "b9b0d4b299a74b2d",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 47",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "cc7433b1463efff6",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "0003f6d338b29558",
+                "8feabee82f1201c6",
+                "a8841fcf1b051fae"
+            ]
+        ]
+    },
+    {
+        "id": "17f963a1a4787b78",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 48",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b47d7010fb34bb7e",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 49",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "53eba7f31cdf3ca8",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 50",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "4e980cd853480b59",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 5",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 580,
+        "wires": [
+            [
+                "dad6731eeef40a0c",
+                "817a3668e364e397"
+            ]
+        ]
+    },
+    {
+        "id": "dad6731eeef40a0c",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 51",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "817a3668e364e397",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "vibration-out",
+        "measurement": "VibrationSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 810,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "ec9033b5069a309e",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VibrationSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/VibrationSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 440,
+        "y": 580,
+        "wires": [
+            [
+                "4e980cd853480b59",
+                "7d795afc5cf81323"
+            ]
+        ]
+    },
+    {
+        "id": "95598c5a14e70705",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 580,
+        "wires": [
+            [
+                "ec9033b5069a309e"
+            ]
+        ]
+    },
+    {
+        "id": "7d795afc5cf81323",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 52",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "7e0cfcd2ff9e769d",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Vibration Influx In",
+        "query": "select * from VibrationSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 430,
+        "y": 660,
+        "wires": [
+            [
+                "6373d4370f1f463a"
+            ]
+        ]
+    },
+    {
+        "id": "49997a99c0196c99",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 660,
+        "wires": [
+            [
+                "7e0cfcd2ff9e769d"
+            ]
+        ]
+    },
+    {
+        "id": "6373d4370f1f463a",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 53",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "2725caefaacc558b",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "SoilMoisturefun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1023)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 760,
+        "wires": [
+            [
+                "d798100910484a5d",
+                "ac9b53bb759649c8"
+            ]
+        ]
+    },
+    {
+        "id": "d798100910484a5d",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "SoilMoistureSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/SoilMoistureSensor/soilmoisture",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 630,
+        "y": 760,
+        "wires": [
+            [
+                "7734566f2dc7d980"
+            ]
+        ]
+    },
+    {
+        "id": "7734566f2dc7d980",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 54",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "ac9b53bb759649c8",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 55",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "002d77be0fb892af",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 760,
+        "wires": [
+            [
+                "2725caefaacc558b"
+            ]
+        ]
+    },
+    {
+        "id": "f1c9ba04e33a7d00",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 6",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 820,
+        "wires": [
+            [
+                "4d0e20562d86fec6",
+                "62b77022bcb948d7"
+            ]
+        ]
+    },
+    {
+        "id": "4d0e20562d86fec6",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 56",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "62b77022bcb948d7",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "SoilMoisture-out",
+        "measurement": "SoilMoistureSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 820,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "f30e89aee5c947ee",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "SoilMoistureSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/SoilMoistureSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 450,
+        "y": 820,
+        "wires": [
+            [
+                "f1c9ba04e33a7d00",
+                "511f9bb9cbc733d1"
+            ]
+        ]
+    },
+    {
+        "id": "87888f9beeb14c7c",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 820,
+        "wires": [
+            [
+                "f30e89aee5c947ee"
+            ]
+        ]
+    },
+    {
+        "id": "511f9bb9cbc733d1",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 57",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "c73109cb640c3926",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "SoilMoisture In",
+        "query": "select * from SoilMoistureSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 420,
+        "y": 900,
+        "wires": [
+            [
+                "67d6ca8c71f36bce"
+            ]
+        ]
+    },
+    {
+        "id": "f1a2b34b08c6fd2e",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 900,
+        "wires": [
+            [
+                "c73109cb640c3926"
+            ]
+        ]
+    },
+    {
+        "id": "67d6ca8c71f36bce",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 58",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "9e70af9fb44649d5",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "AirQualityfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 500)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 960,
+        "wires": [
+            [
+                "cee5b6587f40e48c"
+            ]
+        ]
+    },
+    {
+        "id": "cee5b6587f40e48c",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "AirQualitySensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/AirQualitySensor/airquality",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 630,
+        "y": 960,
+        "wires": [
+            [
+                "e714f1b043666ea3"
+            ]
+        ]
+    },
+    {
+        "id": "e714f1b043666ea3",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 59",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "f492aed6274b8b61",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 960,
+        "wires": [
+            [
+                "9e70af9fb44649d5"
+            ]
+        ]
+    },
+    {
+        "id": "e05d4e2fff34f0c3",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 7",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 1020,
+        "wires": [
+            [
+                "c1421429c4376a45",
+                "d33ceeb491d4127c"
+            ]
+        ]
+    },
+    {
+        "id": "c1421429c4376a45",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 60",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 800,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "d33ceeb491d4127c",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "AirQuality-out",
+        "measurement": "AirQualitySensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 800,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "cd29c22ed91fd858",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "AirQualitySensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/AirQualitySensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 1020,
+        "wires": [
+            [
+                "e05d4e2fff34f0c3",
+                "9453479d1e1a0bfe"
+            ]
+        ]
+    },
+    {
+        "id": "2352c75f119e67ae",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 1020,
+        "wires": [
+            [
+                "cd29c22ed91fd858"
+            ]
+        ]
+    },
+    {
+        "id": "9453479d1e1a0bfe",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 61",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "5a60171a5040fbb9",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "AirQuality In",
+        "query": "select * from AirQualitySensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 390,
+        "y": 1100,
+        "wires": [
+            [
+                "72bc75b4e4dc6286"
+            ]
+        ]
+    },
+    {
+        "id": "2fa031faaeffcaa7",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 1100,
+        "wires": [
+            [
+                "5a60171a5040fbb9"
+            ]
+        ]
+    },
+    {
+        "id": "72bc75b4e4dc6286",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 62",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "857f290f2b47d593",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "PHfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 14)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1180,
+        "wires": [
+            [
+                "57bc80a4a4e6e175"
+            ]
+        ]
+    },
+    {
+        "id": "57bc80a4a4e6e175",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "PHSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/PHSensor/ph",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 630,
+        "y": 1180,
+        "wires": [
+            [
+                "da954ac40dd58445"
+            ]
+        ]
+    },
+    {
+        "id": "da954ac40dd58445",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 63",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "186a77dec8fa06a5",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 240,
+        "y": 1200,
+        "wires": [
+            [
+                "857f290f2b47d593"
+            ]
+        ]
+    },
+    {
+        "id": "13e15352e58d4739",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 8",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: \" \"  \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 1240,
+        "wires": [
+            [
+                "b48e913dd3efdda9",
+                "83ac4cd26ac80250"
+            ]
+        ]
+    },
+    {
+        "id": "b48e913dd3efdda9",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 64",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "83ac4cd26ac80250",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "PH-out",
+        "measurement": "PHSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 800,
+        "y": 1240,
+        "wires": []
+    },
+    {
+        "id": "b131e734aa63b1d0",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "PHSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/PHSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 420,
+        "y": 1240,
+        "wires": [
+            [
+                "13e15352e58d4739",
+                "7aec20e4aced2685"
+            ]
+        ]
+    },
+    {
+        "id": "120316e70febb3fb",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 1240,
+        "wires": [
+            [
+                "b131e734aa63b1d0"
+            ]
+        ]
+    },
+    {
+        "id": "7aec20e4aced2685",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 65",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "e216e49ac8fa43d6",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "PH In",
+        "query": "select * from PHSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 430,
+        "y": 1300,
+        "wires": [
+            [
+                "f666c4fbf3586602"
+            ]
+        ]
+    },
+    {
+        "id": "a90c56ca3963d29c",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 1320,
+        "wires": [
+            [
+                "e216e49ac8fa43d6"
+            ]
+        ]
+    },
+    {
+        "id": "f666c4fbf3586602",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 66",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "14647cbe1e32ea63",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Carbondioxidefun",
+        "func": "/*function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1100).toFixed(1)\n*/\nmsg.payload = 189.0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 1380,
+        "wires": [
+            [
+                "2fc51aa48618ef36"
+            ]
+        ]
+    },
+    {
+        "id": "2fc51aa48618ef36",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "CarbondioxideSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/CarbondioxideSensor/carbondioxide",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 680,
+        "y": 1380,
+        "wires": [
+            [
+                "7508d1e8551ecfe0"
+            ]
+        ]
+    },
+    {
+        "id": "7508d1e8551ecfe0",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 67",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "48aa46a2bf644ef1",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 1380,
+        "wires": [
+            [
+                "14647cbe1e32ea63"
+            ]
+        ]
+    },
+    {
+        "id": "a15966924dac67d4",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 9",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 1420,
+        "wires": [
+            [
+                "d9fd397b79b1ba4e",
+                "47e59cc2764a9240"
+            ]
+        ]
+    },
+    {
+        "id": "d9fd397b79b1ba4e",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 68",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "47e59cc2764a9240",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Carbondioxide-out",
+        "measurement": "CarbondioxideSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 850,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "bc7f6875e3e3a105",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "CarbondioxideSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/CarbondioxideSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 480,
+        "y": 1420,
+        "wires": [
+            [
+                "a15966924dac67d4",
+                "09e598f53fcdec53"
+            ]
+        ]
+    },
+    {
+        "id": "54cf5c7236b1c33e",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 1420,
+        "wires": [
+            [
+                "bc7f6875e3e3a105"
+            ]
+        ]
+    },
+    {
+        "id": "09e598f53fcdec53",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 69",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "2577b8464b75306d",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Carbondioxide In",
+        "query": "select * from CarbondioxideSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 450,
+        "y": 1500,
+        "wires": [
+            [
+                "3fe09bc778007828"
+            ]
+        ]
+    },
+    {
+        "id": "9fc8c2e751409c68",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 1500,
+        "wires": [
+            [
+                "2577b8464b75306d"
+            ]
+        ]
+    },
+    {
+        "id": "3fe09bc778007828",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 70",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "955b01b20e09b613",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Conductivityfun-w",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 20).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1560,
+        "wires": [
+            [
+                "0c03e1d62a3edce7"
+            ]
+        ]
+    },
+    {
+        "id": "0c03e1d62a3edce7",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ConductivitySensor-w",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ConductivitySensor/conductivity-w",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 680,
+        "y": 1560,
+        "wires": [
+            [
+                "ec01d36173e8d87b"
+            ]
+        ]
+    },
+    {
+        "id": "ec01d36173e8d87b",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 71",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "f7703bcf835d322f",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Conductivityfun-t",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-15, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1600,
+        "wires": [
+            [
+                "a45434365f4accb2"
+            ]
+        ]
+    },
+    {
+        "id": "a45434365f4accb2",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ConductivitySensor-t",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ConductivitySensor/conductivity-t",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 680,
+        "y": 1600,
+        "wires": [
+            [
+                "06d04b473b3570a2"
+            ]
+        ]
+    },
+    {
+        "id": "06d04b473b3570a2",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 72",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "9fec0c794303907f",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 1580,
+        "wires": [
+            [
+                "955b01b20e09b613",
+                "f7703bcf835d322f"
+            ]
+        ]
+    },
+    {
+        "id": "7b7fb9dd4ec0c72c",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 10",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 1660,
+        "wires": [
+            [
+                "8a1d680a564b2911",
+                "0c3740c63fc95312"
+            ]
+        ]
+    },
+    {
+        "id": "8a1d680a564b2911",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 73",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 1700,
+        "wires": []
+    },
+    {
+        "id": "0c3740c63fc95312",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Conductivity-out",
+        "measurement": "ConductivitySensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 830,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "fb0e218ef03d44f1",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ConductivitySensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/ConductivitySensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 460,
+        "y": 1660,
+        "wires": [
+            [
+                "7b7fb9dd4ec0c72c",
+                "a4980a5d9c7607a6"
+            ]
+        ]
+    },
+    {
+        "id": "3ea718d9909de3e0",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 270,
+        "y": 1660,
+        "wires": [
+            [
+                "fb0e218ef03d44f1"
+            ]
+        ]
+    },
+    {
+        "id": "a4980a5d9c7607a6",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 74",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 1700,
+        "wires": []
+    },
+    {
+        "id": "3c42d3d37258b114",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Conductivity In",
+        "query": "select * from ConductivitySensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 460,
+        "y": 1740,
+        "wires": [
+            [
+                "cf130161d5272890"
+            ]
+        ]
+    },
+    {
+        "id": "5c81afa670300bab",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 270,
+        "y": 1740,
+        "wires": [
+            [
+                "3c42d3d37258b114"
+            ]
+        ]
+    },
+    {
+        "id": "cf130161d5272890",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 75",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "f829d56dc861b088",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Currentfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 40).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 1800,
+        "wires": [
+            [
+                "6f62a10242a2a07e"
+            ]
+        ]
+    },
+    {
+        "id": "6f62a10242a2a07e",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "CurrentSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/CurrentSensor/current",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 660,
+        "y": 1800,
+        "wires": [
+            [
+                "b46a4c9d440fd686"
+            ]
+        ]
+    },
+    {
+        "id": "b46a4c9d440fd686",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 76",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 1800,
+        "wires": []
+    },
+    {
+        "id": "1d6c9422c71fb4da",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 1800,
+        "wires": [
+            [
+                "f829d56dc861b088"
+            ]
+        ]
+    },
+    {
+        "id": "6532a5e22d90b940",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 11",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 1840,
+        "wires": [
+            [
+                "0bece4412e624209",
+                "a9925fa1ddd89830"
+            ]
+        ]
+    },
+    {
+        "id": "0bece4412e624209",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 77",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "a9925fa1ddd89830",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Current-out",
+        "measurement": "CurrentSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 840,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "d4e9ef4f9f73c04c",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "CurrentSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/CurrentSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 1840,
+        "wires": [
+            [
+                "6532a5e22d90b940",
+                "78c9e08b74836144"
+            ]
+        ]
+    },
+    {
+        "id": "693e8bddd75c5a98",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 1840,
+        "wires": [
+            [
+                "d4e9ef4f9f73c04c"
+            ]
+        ]
+    },
+    {
+        "id": "78c9e08b74836144",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 78",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "751d020483821d0e",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Current In",
+        "query": "select * from CurrentSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 460,
+        "y": 1920,
+        "wires": [
+            [
+                "d90003fb565918f4"
+            ]
+        ]
+    },
+    {
+        "id": "f78e001feb7a7aac",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 1920,
+        "wires": [
+            [
+                "751d020483821d0e"
+            ]
+        ]
+    },
+    {
+        "id": "d90003fb565918f4",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 79",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 1920,
+        "wires": []
+    },
+    {
+        "id": "96c594ced686705c",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Voltagefun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 500).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 2000,
+        "wires": [
+            [
+                "4d3ddf3d1b0bd9f5"
+            ]
+        ]
+    },
+    {
+        "id": "4d3ddf3d1b0bd9f5",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VoltageSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VoltageSensor/voltage",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 680,
+        "y": 2000,
+        "wires": [
+            [
+                "399591b7ec86fb40"
+            ]
+        ]
+    },
+    {
+        "id": "399591b7ec86fb40",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 80",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "fbbe8c7d591e2d15",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 2000,
+        "wires": [
+            [
+                "96c594ced686705c"
+            ]
+        ]
+    },
+    {
+        "id": "b26be925b827be32",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 12",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2060,
+        "wires": [
+            [
+                "5c25677f10555541",
+                "76929f9d97918fe3"
+            ]
+        ]
+    },
+    {
+        "id": "5c25677f10555541",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 81",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 2100,
+        "wires": []
+    },
+    {
+        "id": "76929f9d97918fe3",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Voltage-out",
+        "measurement": "VoltageSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 840,
+        "y": 2060,
+        "wires": []
+    },
+    {
+        "id": "deece6d590107212",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "VoltageSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/VoltageSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 2060,
+        "wires": [
+            [
+                "b26be925b827be32",
+                "70e5e73d0774f082"
+            ]
+        ]
+    },
+    {
+        "id": "7e4064f8524073c4",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 2060,
+        "wires": [
+            [
+                "deece6d590107212"
+            ]
+        ]
+    },
+    {
+        "id": "70e5e73d0774f082",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 82",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 2100,
+        "wires": []
+    },
+    {
+        "id": "bace16b76ea5cc20",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Voltage In",
+        "query": "select * from VoltageSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 460,
+        "y": 2140,
+        "wires": [
+            [
+                "a654ea6cc22075bf"
+            ]
+        ]
+    },
+    {
+        "id": "e0419aed525ad1c7",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 2140,
+        "wires": [
+            [
+                "bace16b76ea5cc20"
+            ]
+        ]
+    },
+    {
+        "id": "a654ea6cc22075bf",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 83",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "56df9bb862bc388f",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Powerfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 40).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 2200,
+        "wires": [
+            [
+                "c62c978451c63aef"
+            ]
+        ]
+    },
+    {
+        "id": "c62c978451c63aef",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "PowerSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/PowerSensor/power",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 680,
+        "y": 2200,
+        "wires": [
+            [
+                "95374f6e546fac33"
+            ]
+        ]
+    },
+    {
+        "id": "95374f6e546fac33",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 84",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2200,
+        "wires": []
+    },
+    {
+        "id": "8c0d06138051e46d",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 2200,
+        "wires": [
+            [
+                "56df9bb862bc388f"
+            ]
+        ]
+    },
+    {
+        "id": "6f64cecfa03a0a87",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 13",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2260,
+        "wires": [
+            [
+                "a7056d8e1846ae39",
+                "84a6201c3a0ceb7c"
+            ]
+        ]
+    },
+    {
+        "id": "a7056d8e1846ae39",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 85",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 2300,
+        "wires": []
+    },
+    {
+        "id": "84a6201c3a0ceb7c",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Power-out",
+        "measurement": "PowerSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 840,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "12d321bda306e3f6",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "PowerSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/PowerSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 460,
+        "y": 2260,
+        "wires": [
+            [
+                "6f64cecfa03a0a87",
+                "8bf7f5fbc49f0eb6"
+            ]
+        ]
+    },
+    {
+        "id": "ac028e19dd7c64f5",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 2280,
+        "wires": [
+            [
+                "12d321bda306e3f6"
+            ]
+        ]
+    },
+    {
+        "id": "8bf7f5fbc49f0eb6",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 86",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 2300,
+        "wires": []
+    },
+    {
+        "id": "c511327401cb9628",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Power In",
+        "query": "select * from PowerSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 460,
+        "y": 2340,
+        "wires": [
+            [
+                "48917648b1ce0ca5"
+            ]
+        ]
+    },
+    {
+        "id": "25587c8c0df5d5f2",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 2340,
+        "wires": [
+            [
+                "c511327401cb9628"
+            ]
+        ]
+    },
+    {
+        "id": "48917648b1ce0ca5",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 87",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 2340,
+        "wires": []
+    },
+    {
+        "id": "440463010791349f",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Radiationfun-g",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 10000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2400,
+        "wires": [
+            [
+                "442f81aab84e3568"
+            ]
+        ]
+    },
+    {
+        "id": "442f81aab84e3568",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "RadiationSensor-g",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-g",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2400,
+        "wires": [
+            [
+                "eae56db667034b3a"
+            ]
+        ]
+    },
+    {
+        "id": "eae56db667034b3a",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 88",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2400,
+        "wires": []
+    },
+    {
+        "id": "c52e782ef6c1c9c5",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Radiationfun-ls",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 10000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2440,
+        "wires": [
+            [
+                "84c75ee06e76de63"
+            ]
+        ]
+    },
+    {
+        "id": "84c75ee06e76de63",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "RadiationSensor-ls",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-ls",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2440,
+        "wires": [
+            [
+                "6a7a311237aa2814"
+            ]
+        ]
+    },
+    {
+        "id": "6a7a311237aa2814",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 89",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2440,
+        "wires": []
+    },
+    {
+        "id": "cd0e5787c4cd8302",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Radiationfun-n",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2480,
+        "wires": [
+            [
+                "dfd07f4a06f0d51d"
+            ]
+        ]
+    },
+    {
+        "id": "dfd07f4a06f0d51d",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "RadiationSensor-n",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-n",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2480,
+        "wires": [
+            [
+                "c0ae274461bcc8ee"
+            ]
+        ]
+    },
+    {
+        "id": "c0ae274461bcc8ee",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 90",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2480,
+        "wires": []
+    },
+    {
+        "id": "3171c3624f5ba22c",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Radiationfun-i",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 5000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2520,
+        "wires": [
+            [
+                "d9a3f5d766b52730"
+            ]
+        ]
+    },
+    {
+        "id": "d9a3f5d766b52730",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "RadiationSensor-i",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-i",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2520,
+        "wires": [
+            [
+                "118331c3b26cd036"
+            ]
+        ]
+    },
+    {
+        "id": "118331c3b26cd036",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 91",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2520,
+        "wires": []
+    },
+    {
+        "id": "10745927200627ea",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 2460,
+        "wires": [
+            [
+                "440463010791349f",
+                "c52e782ef6c1c9c5",
+                "cd0e5787c4cd8302",
+                "3171c3624f5ba22c"
+            ]
+        ]
+    },
+    {
+        "id": "85599fca8550654b",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 14",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 2580,
+        "wires": [
+            [
+                "098ccc5ee75b8ba7",
+                "de806bc04a313898"
+            ]
+        ]
+    },
+    {
+        "id": "098ccc5ee75b8ba7",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 92",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 2620,
+        "wires": []
+    },
+    {
+        "id": "de806bc04a313898",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Radiation-out",
+        "measurement": "RadiationSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 840,
+        "y": 2580,
+        "wires": []
+    },
+    {
+        "id": "35583a3af9a2393f",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "RadiationSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/RadiationSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 2580,
+        "wires": [
+            [
+                "85599fca8550654b",
+                "24fa4c3126fde4b2"
+            ]
+        ]
+    },
+    {
+        "id": "f4c06f34a8d5f8dd",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 2580,
+        "wires": [
+            [
+                "35583a3af9a2393f"
+            ]
+        ]
+    },
+    {
+        "id": "24fa4c3126fde4b2",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 93",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 2620,
+        "wires": []
+    },
+    {
+        "id": "6abc462f6b97acb2",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Radiation In",
+        "query": "select * from RadiationSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 470,
+        "y": 2660,
+        "wires": [
+            [
+                "108345fe2f03b39e"
+            ]
+        ]
+    },
+    {
+        "id": "fcbfdf56d6a8e781",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 2660,
+        "wires": [
+            [
+                "6abc462f6b97acb2"
+            ]
+        ]
+    },
+    {
+        "id": "108345fe2f03b39e",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 94",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 2660,
+        "wires": []
+    },
+    {
+        "id": "4f234fd386d6d366",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Chemicalfun-ph",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 14).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2720,
+        "wires": [
+            [
+                "015655a2fce94549"
+            ]
+        ]
+    },
+    {
+        "id": "015655a2fce94549",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ChemicalSensor-ph",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-ph",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2720,
+        "wires": [
+            [
+                "2b8421c4c4d142f7"
+            ]
+        ]
+    },
+    {
+        "id": "2b8421c4c4d142f7",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 95",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2720,
+        "wires": []
+    },
+    {
+        "id": "55bb8bbea912a065",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Chemicalfun-g",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 500).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2760,
+        "wires": [
+            [
+                "cfd8bfba28358b03"
+            ]
+        ]
+    },
+    {
+        "id": "cfd8bfba28358b03",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ChemicalSensor-g",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-g",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2760,
+        "wires": [
+            [
+                "d298c41debfbfab4"
+            ]
+        ]
+    },
+    {
+        "id": "d298c41debfbfab4",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 96",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2760,
+        "wires": []
+    },
+    {
+        "id": "7ac23986bbba2bc9",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Chemicalfun-e",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 130).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2800,
+        "wires": [
+            [
+                "9de5fe3ccdc220ce"
+            ]
+        ]
+    },
+    {
+        "id": "9de5fe3ccdc220ce",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ChemicalSensor-e",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-e",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2800,
+        "wires": [
+            [
+                "fc4b112798a01fb8"
+            ]
+        ]
+    },
+    {
+        "id": "fc4b112798a01fb8",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 97",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2800,
+        "wires": []
+    },
+    {
+        "id": "8d59379b532908b0",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Chemicalfun-i",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 150).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 2840,
+        "wires": [
+            [
+                "e5c9c3c96c835957"
+            ]
+        ]
+    },
+    {
+        "id": "e5c9c3c96c835957",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ChemicalSensor-i",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-i",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 690,
+        "y": 2840,
+        "wires": [
+            [
+                "b184205a742ed11d"
+            ]
+        ]
+    },
+    {
+        "id": "b184205a742ed11d",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 98",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 2840,
+        "wires": []
+    },
+    {
+        "id": "5a0bc2e04b8f2ed7",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 2780,
+        "wires": [
+            [
+                "4f234fd386d6d366",
+                "55bb8bbea912a065",
+                "7ac23986bbba2bc9",
+                "8d59379b532908b0"
+            ]
+        ]
+    },
+    {
+        "id": "776b413014443458",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 15",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 2900,
+        "wires": [
+            [
+                "d7613ee94e5ae739",
+                "5f17a4973bd5d001"
+            ]
+        ]
+    },
+    {
+        "id": "d7613ee94e5ae739",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 99",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 2940,
+        "wires": []
+    },
+    {
+        "id": "5f17a4973bd5d001",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Chemical-out",
+        "measurement": "ChemicalSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 860,
+        "y": 2900,
+        "wires": []
+    },
+    {
+        "id": "24053d85611bfc8f",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "ChemicalSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/ChemicalSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 520,
+        "y": 2900,
+        "wires": [
+            [
+                "776b413014443458",
+                "c29e2c0c46835e13"
+            ]
+        ]
+    },
+    {
+        "id": "069e549188c1af59",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 2900,
+        "wires": [
+            [
+                "24053d85611bfc8f"
+            ]
+        ]
+    },
+    {
+        "id": "c29e2c0c46835e13",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 100",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 2940,
+        "wires": []
+    },
+    {
+        "id": "e1c63b3f8ce3a81c",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Chemical-In",
+        "query": "select * from ChemicalSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 490,
+        "y": 2980,
+        "wires": [
+            [
+                "b7e4da70dd464fdd"
+            ]
+        ]
+    },
+    {
+        "id": "b4ea862a0790f166",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 2980,
+        "wires": [
+            [
+                "e1c63b3f8ce3a81c"
+            ]
+        ]
+    },
+    {
+        "id": "b7e4da70dd464fdd",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 101",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 2980,
+        "wires": []
+    },
+    {
+        "id": "37202f08c4555883",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Occupancy-pifun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 3040,
+        "wires": [
+            [
+                "0783333d19a60b22"
+            ]
+        ]
+    },
+    {
+        "id": "0783333d19a60b22",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "OccupancySensor-pi",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-pi",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 700,
+        "y": 3040,
+        "wires": [
+            [
+                "c321b24c0cba047a"
+            ]
+        ]
+    },
+    {
+        "id": "c321b24c0cba047a",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 102",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 3040,
+        "wires": []
+    },
+    {
+        "id": "cbc4660897fe4e64",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Occupancy-ufun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 3080,
+        "wires": [
+            [
+                "89db514f6356956e"
+            ]
+        ]
+    },
+    {
+        "id": "89db514f6356956e",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "OccupancySensor-u",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-u",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 700,
+        "y": 3080,
+        "wires": [
+            [
+                "a963172dd3270607"
+            ]
+        ]
+    },
+    {
+        "id": "a963172dd3270607",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 103",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 3080,
+        "wires": []
+    },
+    {
+        "id": "b4a75d6866cd935c",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Occupancy-vfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 3120,
+        "wires": [
+            [
+                "b80143dd1c1cef30"
+            ]
+        ]
+    },
+    {
+        "id": "b80143dd1c1cef30",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "OccupancySensor-v",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-v",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 700,
+        "y": 3120,
+        "wires": [
+            [
+                "4c35df6585d4d5f9"
+            ]
+        ]
+    },
+    {
+        "id": "4c35df6585d4d5f9",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 104",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 3120,
+        "wires": []
+    },
+    {
+        "id": "a2e24297c223424f",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 260,
+        "y": 3060,
+        "wires": [
+            [
+                "37202f08c4555883",
+                "cbc4660897fe4e64",
+                "b4a75d6866cd935c"
+            ]
+        ]
+    },
+    {
+        "id": "3c7ae2b91fe28135",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 16",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit:\" \"   \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 3180,
+        "wires": [
+            [
+                "ef15c81c57ba6960",
+                "c6e72ae734921dc8"
+            ]
+        ]
+    },
+    {
+        "id": "ef15c81c57ba6960",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 105",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 3220,
+        "wires": []
+    },
+    {
+        "id": "c6e72ae734921dc8",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Occupancy-out",
+        "measurement": "OccupancySensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 850,
+        "y": 3180,
+        "wires": []
+    },
+    {
+        "id": "c1b6133b79d9fb97",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "OccupancySensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/OccupancySensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 510,
+        "y": 3180,
+        "wires": [
+            [
+                "3c7ae2b91fe28135",
+                "d7e5432a36bc8605"
+            ]
+        ]
+    },
+    {
+        "id": "34b678a79c77ab4d",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 3180,
+        "wires": [
+            [
+                "c1b6133b79d9fb97"
+            ]
+        ]
+    },
+    {
+        "id": "d7e5432a36bc8605",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 106",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 670,
+        "y": 3220,
+        "wires": []
+    },
+    {
+        "id": "4e383365233739e4",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Occupancy-In",
+        "query": "select * from OccupancySensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 480,
+        "y": 3260,
+        "wires": [
+            [
+                "9a213f2f3d196ac5"
+            ]
+        ]
+    },
+    {
+        "id": "97638eaf19631569",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 3260,
+        "wires": [
+            [
+                "4e383365233739e4"
+            ]
+        ]
+    },
+    {
+        "id": "9a213f2f3d196ac5",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 107",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 3260,
+        "wires": []
+    },
+    {
+        "id": "5a878c02c215f5e2",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Heartbeatfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(40, 200)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 3320,
+        "wires": [
+            [
+                "0f727572618e6864",
+                "33483006ed9f9270"
+            ]
+        ]
+    },
+    {
+        "id": "0f727572618e6864",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "HeartbeatSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/HeartbeatSensor/heartbeat",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 670,
+        "y": 3320,
+        "wires": [
+            [
+                "ce76e1bdba343263"
+            ]
+        ]
+    },
+    {
+        "id": "ce76e1bdba343263",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 108",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 3320,
+        "wires": []
+    },
+    {
+        "id": "0525d86b129b3b73",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3320,
+        "wires": [
+            [
+                "5a878c02c215f5e2"
+            ]
+        ]
+    },
+    {
+        "id": "1ab90d641109d33b",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 17",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 3380,
+        "wires": [
+            [
+                "6a1399be61a6f7c3",
+                "0c977022b16988cb"
+            ]
+        ]
+    },
+    {
+        "id": "6a1399be61a6f7c3",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 109",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 3420,
+        "wires": []
+    },
+    {
+        "id": "0c977022b16988cb",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Heartbeat-out",
+        "measurement": "HeartbeatSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 870,
+        "y": 3380,
+        "wires": []
+    },
+    {
+        "id": "64a73bd812787bea",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "HeartbeatSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/HeartbeatSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 490,
+        "y": 3380,
+        "wires": [
+            [
+                "1ab90d641109d33b",
+                "9e3cfc6658142c4d"
+            ]
+        ]
+    },
+    {
+        "id": "6bceae5ecb83bdcb",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3380,
+        "wires": [
+            [
+                "64a73bd812787bea"
+            ]
+        ]
+    },
+    {
+        "id": "9e3cfc6658142c4d",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 110",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 3420,
+        "wires": []
+    },
+    {
+        "id": "c3de6fb725d6f247",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Heartbeat-In",
+        "query": "select * from HeartbeatSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 490,
+        "y": 3460,
+        "wires": [
+            [
+                "69362a6b06ccaa42"
+            ]
+        ]
+    },
+    {
+        "id": "6ca6cc700e13d755",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3460,
+        "wires": [
+            [
+                "c3de6fb725d6f247"
+            ]
+        ]
+    },
+    {
+        "id": "69362a6b06ccaa42",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 111",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 3460,
+        "wires": []
+    },
+    {
+        "id": "33483006ed9f9270",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 112",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 3300,
+        "wires": []
+    },
+    {
+        "id": "ac505a2a9acf1dca",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "Bloodpressurefun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 300)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 3540,
+        "wires": [
+            [
+                "e0a3238ce47273e9"
+            ]
+        ]
+    },
+    {
+        "id": "e0a3238ce47273e9",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "BloodPressureSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/BloodpressureSensor/bp",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 700,
+        "y": 3540,
+        "wires": [
+            [
+                "c61a9def725a3bf7"
+            ]
+        ]
+    },
+    {
+        "id": "c61a9def725a3bf7",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 113",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 3540,
+        "wires": []
+    },
+    {
+        "id": "ee0c9e8bc24a7dac",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3540,
+        "wires": [
+            [
+                "ac505a2a9acf1dca"
+            ]
+        ]
+    },
+    {
+        "id": "03fa5849b99bbb56",
+        "type": "function",
+        "z": "099844356f08c366",
+        "name": "function 18",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000); \n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units    \n    };\n    var measurementjson2 = {\n        gateway : v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location : \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n    \n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 3600,
+        "wires": [
+            [
+                "35249e0c2688201a",
+                "4829d55c08c2f3e9"
+            ]
+        ]
+    },
+    {
+        "id": "35249e0c2688201a",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 114",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 3640,
+        "wires": []
+    },
+    {
+        "id": "4829d55c08c2f3e9",
+        "type": "influxdb out",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Bloodpressure-out",
+        "measurement": "BloodpressureSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 880,
+        "y": 3600,
+        "wires": []
+    },
+    {
+        "id": "2cb17da9bb61021d",
+        "type": "http request",
+        "z": "099844356f08c366",
+        "name": "BloodPressureSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/BloodpressureSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 500,
+        "y": 3600,
+        "wires": [
+            [
+                "03fa5849b99bbb56",
+                "54660286df6a10df"
+            ]
+        ]
+    },
+    {
+        "id": "32af97e5c82790b4",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3600,
+        "wires": [
+            [
+                "2cb17da9bb61021d"
+            ]
+        ]
+    },
+    {
+        "id": "54660286df6a10df",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 115",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 3640,
+        "wires": []
+    },
+    {
+        "id": "34927fade39be05e",
+        "type": "influxdb in",
+        "z": "099844356f08c366",
+        "influxdb": "92d96ef258e85909",
+        "name": "Bloodpressure-In",
+        "query": "select * from BloodpressureSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 510,
+        "y": 3680,
+        "wires": [
+            [
+                "72b8554d0b487d52"
+            ]
+        ]
+    },
+    {
+        "id": "0acf2b08b63bf395",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 3680,
+        "wires": [
+            [
+                "34927fade39be05e"
+            ]
+        ]
+    },
+    {
+        "id": "72b8554d0b487d52",
+        "type": "debug",
+        "z": "099844356f08c366",
+        "name": "debug 116",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 3680,
+        "wires": []
+    },
+    {
+        "id": "e389a836d033a147",
+        "type": "inject",
+        "z": "099844356f08c366",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "4f234fd386d6d366",
+                "55bb8bbea912a065",
+                "7ac23986bbba2bc9",
+                "8d59379b532908b0",
+                "24053d85611bfc8f",
+                "e1c63b3f8ce3a81c",
+                "37202f08c4555883",
+                "cbc4660897fe4e64",
+                "b4a75d6866cd935c",
+                "c1b6133b79d9fb97",
+                "4e383365233739e4",
+                "5a878c02c215f5e2",
+                "64a73bd812787bea",
+                "c3de6fb725d6f247",
+                "ac505a2a9acf1dca",
+                "2cb17da9bb61021d",
+                "34927fade39be05e",
+                "6abc462f6b97acb2",
+                "35583a3af9a2393f",
+                "440463010791349f",
+                "c52e782ef6c1c9c5",
+                "cd0e5787c4cd8302",
+                "3171c3624f5ba22c",
+                "c511327401cb9628",
+                "12d321bda306e3f6",
+                "56df9bb862bc388f",
+                "bace16b76ea5cc20",
+                "deece6d590107212",
+                "96c594ced686705c",
+                "751d020483821d0e",
+                "3c42d3d37258b114",
+                "f829d56dc861b088",
+                "d4e9ef4f9f73c04c",
+                "fb0e218ef03d44f1",
+                "955b01b20e09b613",
+                "f7703bcf835d322f",
+                "2577b8464b75306d",
+                "bc7f6875e3e3a105",
+                "14647cbe1e32ea63",
+                "e216e49ac8fa43d6",
+                "b131e734aa63b1d0",
+                "857f290f2b47d593",
+                "5a60171a5040fbb9",
+                "cd29c22ed91fd858",
+                "9e70af9fb44649d5",
+                "c73109cb640c3926",
+                "f30e89aee5c947ee",
+                "2725caefaacc558b",
+                "7e0cfcd2ff9e769d",
+                "ec9033b5069a309e",
+                "a8841fcf1b051fae",
+                "8feabee82f1201c6",
+                "0003f6d338b29558",
+                "acad2bb8a63fa685",
+                "72aa1b38e56b8442",
+                "70f7ca5058b5c549"
+            ]
+        ]
+    },
+    {
+        "id": "92d96ef258e85909",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "sensorsedgex",
+        "name": "",
+        "usetls": false,
+        "tls": "d50d0c9f.31e858",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "d50d0c9f.31e858",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false
+    }
+]

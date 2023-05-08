@@ -8,12 +8,39 @@ from createcacert import createX509
 from createsymkey import createSymKey
 from influxdb import InfluxDBClient
 from flask_httpauth import HTTPBasicAuth
+from collections import OrderedDict
 
 # creating a Flask app
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 auth = HTTPBasicAuth()
+
+@app.route('/api/v1/gateway/count/provisioned')
+@cross_origin()
+def getgatewayprovcount():
+    try:
+        apiurl = "http://localhost:59881/api/v2/device/all"
+        response = requests.get(apiurl)
+        gatewaycount = response.json()['totalCount']
+        return str(gatewaycount)
+    except Exception as e:
+        return e
+
+@app.route('/api/v1/gateway/count/unprovisioned')
+def getgatewayunprovcount():
+    try:
+        apiurl_prov = "http://localhost:59881/api/v2/device/all"
+        response_prov = requests.get(apiurl_prov)
+        gatewaycount_prov = response_prov.json()['totalCount']
+        
+        apiurl_tot = "http://localhost:59881/api/v2/deviceprofile/all"
+        response_tot = requests.get(apiurl_tot)
+        gatewaycount_tot = response_tot.json()['totalCount']
+        return str(gatewaycount_tot - gatewaycount_prov)
+    except Exception as e:
+        return e
+
 
 @app.route('/')
 @cross_origin()
@@ -53,32 +80,8 @@ def provisiondevicesymmetrickey():
         symkey = createSymKey()
         return symkey
     except Exception as e:
-        return e
+        return eSS
 
-@app.route('/api/v1/gateway/count/provisioned')
-@cross_origin()
-def getgatewayprovcount():
-    try:
-        apiurl = "http://localhost:59881/api/v2/device/all"
-        response = requests.get(apiurl)
-        gatewaycount = response.json()['totalCount']
-        return str(gatewaycount)
-    except Exception as e:
-        return e
-
-@app.route('/api/v1/gateway/count/unprovisioned')
-def getgatewayunprovcount():
-    try:
-        apiurl_prov = "http://localhost:59881/api/v2/device/all"
-        response_prov = requests.get(apiurl_prov)
-        gatewaycount_prov = response_prov.json()['totalCount']
-        
-        apiurl_tot = "http://localhost:59881/api/v2/deviceprofile/all"
-        response_tot = requests.get(apiurl_tot)
-        gatewaycount_tot = response_tot.json()['totalCount']
-        return str(gatewaycount_tot - gatewaycount_prov)
-    except Exception as e:
-        return e
         
 @app.route('/api/v1/gateway/count/total')
 @cross_origin()
@@ -175,7 +178,7 @@ def getinactivecount():
 @cross_origin()
 def getdevicenames():
     try:
-        apiurl = "http://localhost:59881/api/v2/device/all"
+        apiurl = "http://localhost:59881/api/v2/device/all?limit=-1"
         response = requests.get(apiurl)
         devicelist = response.json()['devices']
         cnt = 0
@@ -200,7 +203,7 @@ def getdevicenames():
 @cross_origin()
 def getdevicenamesall():
     try:
-    	apiurl = "http://localhost:59881/api/v2/device/all?limit=-1"
+        apiurl = "http://localhost:59881/api/v2/device/all?limit=-1"
         response = requests.get(apiurl)
         devicelist = response.json()['devices']
         lst = []
@@ -432,64 +435,98 @@ def getdevicedataallconfig():
     except Exception as e:
         return str(e), 500
 
-        
-#@app.route('/api/v1/gateway/telemetrydata/<devicename>')
-#@cross_origin()
-#def gettelemetrydata(devicename):
-#    try:
-#        apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(devicename)
-#        response = requests.get(apiurl)
-#        readingslist = response.json()['readings']
-#        print(type(readingslist))
-#        print(readingslist[0])
-#        r = []
+@app.route('/api/v1/gateway/telemetrydata/all')
+@cross_origin()
+def gettelemetrydataall():
+    unique_device_names = set({})
+    devices_info = []
+    try:
+        apiurlmain = "http://localhost:59881/api/v2/device/all?limit=-1"
+        responsemain = requests.get(apiurlmain)
+        #print(responsemain.json())
+        devicelistmain = responsemain.json()['devices']
+        #print(devicelistmain)
+        for device in devicelistmain:
+            device_name = device['name']
+            #print(device)
+            if device_name not in unique_device_names:
+                unique_device_names.add(device_name)
+                #print(unique_device_names)
+                devproname = device['profileName']  
+                apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+str(devproname)
+                resdevproname = requests.get(apiurl2)
+                #print(resdevproname)
+                devresname = resdevproname.json()['profile']['deviceResources']
+                devrescnt = len(devresname)  
+                #print(devrescnt)              
+                apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(device_name)
+                response = requests.get(apiurl)
+                readingslist = response.json()['readings']
+                #print(readingslist)
+                i = 0
+                lst = []
+                while i < devrescnt and readingslist != []:
+                    resource_name = readingslist[i]['resourceName']
+                    res = readingslist[i]['value'] 
+                    num = res
+                    if 'units' in readingslist[i]:
+                        units = readingslist[i]['units']
+                    else:
+                        units = ""
+                    #print(units)
+                    print(type(res))
+                    if '.' in res:
+                       num = '{0:.2f}'.format(float(res))
+                    r = [
+                    	device_name,
+                        resource_name,
+                        num,
+                        units
+                    ]
+                    i = i + 1
+                    devices_info.append(r)
+                #print(devices_info)
+        return json.dumps(devices_info)
+    except Exception as e:
+        return e
 
-#	 curr_time = time.time_ns()
-        #print(curr_time)
-#        prev_time = datetime.now() - timedelta(seconds = 2)
-#        prev_ns = int(time.mktime(prev_time.timetuple()) * pow(10, 9))
-#        #print(prev_ns)
-#        apiurl = "http://localhost:59880/api/v2/event/start/"+ str(prev_ns)+"/end/"+ str(curr_time)
-#        response = requests.get(apiurl)
-        #print(response.json())
-#        events = response.json()['events']
-#        devnameset = set({})
-#        for e in events:
-#            devname =e['deviceName']
-#            devnameset.add(devname)
-        
-#        for rl in readingslist:
-#            resource_name = rl['resourceName']
-#            res = rl['value'] 
-#            res2 = float(res)
-#            print(res, type(res))
-#            num = '{0:.2f}'.format(res2)		
-#            print(num)
-#            r.append({ resource_name : num })    		   
-#            print(json.dumps(r))
-#        return json.dumps(r)
-#    except Exception as e:
-#        return e 
-        
+
+     
 @app.route('/api/v1/gateway/telemetrydata/<devicename>')
 @cross_origin()
 def gettelemetrydata(devicename):
     try:
+        apiurl1 = "http://localhost:59881/api/v2/device/name/"+str(devicename)
+        resdevname = requests.get(apiurl1)
+        devproname = resdevname.json()['device']['profileName']  
+        apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+str(devproname)
+        resdevproname = requests.get(apiurl2)
+        devresname = resdevproname.json()['profile']['deviceResources']
+        devrescnt = len(devresname)
+        
         apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(devicename)
         response = requests.get(apiurl)
         readingslist = response.json()['readings']
         #print(type(readingslist))
         #print(readingslist[0])
-        resource_name = readingslist[0]['resourceName']
-        res = readingslist[0]['value'] 
-        res2 = float(res)
-        #print(res, type(res))
-        num = '{0:.2f}'.format(res2)
-        #print(num)
-        r = {
-        resource_name : num
-        }
-        return str(r)
+        i = 0
+        lst = []
+        while i < devrescnt:
+            resource_name = readingslist[i]['resourceName']
+            res = readingslist[i]['value'] 
+            res2 = float(res)
+            if 'units' in readingslist[i]:
+                units = readingslist[i]['units']
+            else:
+                units = ""
+            print(units)
+            num = '{0:.2f}'.format(res2)
+            r = {
+             resource_name : [num, units] 
+            }
+            i = i + 1
+            lst.append(r)
+        return json.dumps(lst)
     except Exception as e:
         return e
 
@@ -510,18 +547,23 @@ database=INFLUXDB_DATABASE)
 @cross_origin()
 def getdataline(devicename):
     try:
-        query = 'SELECT data FROM '+devicename+';'
+        query = 'SELECT data,timestamp FROM '+devicename+';'
         result = client.query(query)
         lst = []
         for point in result.get_points():
             res = point['data']
+            ts = point['timestamp']
             res2 = float(res)
-            num = '{0:.2f}'.format(res2)
-            lst.append(num)
-            print(num)
-        r = { devicename : lst }
-        print(type(r))
-        return json.dumps(r)
+            #num = '{0:.2f}'.format(res2)
+            lgdata = {'value' : res2, 'timestamp' : ts}
+            lst.append(lgdata)
+            #print(num)
+        #r = { devicename : lst }
+        #print(type(r))
+        od = OrderedDict()
+        for d in sorted(lst, key = lambda x : x['timestamp']):
+            od[d['timestamp']] = d['value']
+        return jsonify(od)
     except Exception as e:
         return str(e)
         
@@ -634,3 +676,4 @@ def getgatewaydeviceservicelist():
 if __name__ == '__main__':
     app.run('0.0.0.0',5000,debug = True)
 Footer
+
