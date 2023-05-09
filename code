@@ -1,3 +1,29 @@
+[{
+    "ActiveInactive": "",
+    "AssociatedGatewayProfile": "",
+    "AssociatedServiceProtocol": "",
+    "IOTDeviceName": "",
+    "IPAddress": "",
+    "IotDeviceID": "",
+    "LastCommunicatedTime": "",
+    "PortNumber": "",
+    "ProvisionedDateTime": "",
+    "ProvisionedMethod": "",
+    "ProvisionedStatus": "",
+    "Status": "online",
+    "description": ,
+    "location": 
+  },...]
+
+
+
+
+
+
+
+
+
+
 @app.route('/api/v1/gateway/telemetrydata/all')
 @cross_origin()
 def gettelemetrydataall():
