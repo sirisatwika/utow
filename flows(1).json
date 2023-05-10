@@ -1,0 +1,1669 @@
+[
+    {
+        "id": "1cbfc5021b2aa8e7",
+        "type": "tab",
+        "label": "REST flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "43b3c2c905356a82",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Vibration-Velocityfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-40, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 220,
+        "wires": [
+            [
+                "ca3de81b13707916",
+                "db6e9436b73c1c35"
+            ]
+        ]
+    },
+    {
+        "id": "ca3de81b13707916",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "VibrationSensor-v",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-v",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 710,
+        "y": 220,
+        "wires": [
+            [
+                "bf3a06ccc6f2f85d"
+            ]
+        ]
+    },
+    {
+        "id": "bf3a06ccc6f2f85d",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ede67f5abcfdbaf4",
+        "type": "inject",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 1240,
+        "wires": [
+            [
+                "43b3c2c905356a82",
+                "bcf2435f4418a4df",
+                "d16c6a67d9cf402c",
+                "586af9cb1854e12f",
+                "299b491b1a51fe24",
+                "8cde465ba42de939",
+                "8f5245621d4d57a5",
+                "993f4ffe4cf69323",
+                "c8761418f17c1938",
+                "377defc3454229b9",
+                "02cbd493fc497923",
+                "770f15881858c3c6",
+                "2c048f5384adc994",
+                "b0cac7b683702c87",
+                "3160e3d8d980002c",
+                "a5e124bb6bb13714",
+                "f189be933b0eb2e9",
+                "87b8f4e934bd6dbd",
+                "46e76429bd2b30fb",
+                "55293fe300f29b98",
+                "3461b628e966a951",
+                "aff751c397af0003",
+                "6204f9325c856f25",
+                "9f40052bea528b8f",
+                "7637f047783c692f"
+            ]
+        ]
+    },
+    {
+        "id": "8cde465ba42de939",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "SoilMoisturefun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1023)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 380,
+        "wires": [
+            [
+                "21d068b660982166"
+            ]
+        ]
+    },
+    {
+        "id": "21d068b660982166",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "SoilMoistureSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/SoilMoistureSensor/soilmoisture",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 380,
+        "wires": [
+            [
+                "1784ab38a2539fb0"
+            ]
+        ]
+    },
+    {
+        "id": "1784ab38a2539fb0",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "8f5245621d4d57a5",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "AirQualityfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 500)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 440,
+        "wires": [
+            [
+                "c80dbedd8dbd1d41"
+            ]
+        ]
+    },
+    {
+        "id": "c80dbedd8dbd1d41",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "AirQualitySensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/AirQualitySensor/airquality",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 730,
+        "y": 440,
+        "wires": [
+            [
+                "0a3bd049b1b2e782"
+            ]
+        ]
+    },
+    {
+        "id": "0a3bd049b1b2e782",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "bcf2435f4418a4df",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Conductivityfun-w",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 20).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 640,
+        "wires": [
+            [
+                "d2b4cebd4952943a"
+            ]
+        ]
+    },
+    {
+        "id": "d2b4cebd4952943a",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ConductivitySensor-w",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ConductivitySensor/conductivity-w",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 740,
+        "y": 640,
+        "wires": [
+            [
+                "6b26c3736f36585c"
+            ]
+        ]
+    },
+    {
+        "id": "6b26c3736f36585c",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 10",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "d16c6a67d9cf402c",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Conductivityfun-t",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-15, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 680,
+        "wires": [
+            [
+                "4abbac14e2b4c9a0"
+            ]
+        ]
+    },
+    {
+        "id": "4abbac14e2b4c9a0",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ConductivitySensor-t",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ConductivitySensor/conductivity-t",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 740,
+        "y": 680,
+        "wires": [
+            [
+                "a2b8779fabbe28f1"
+            ]
+        ]
+    },
+    {
+        "id": "a2b8779fabbe28f1",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 11",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "586af9cb1854e12f",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Vibration-Acceleartionfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 260,
+        "wires": [
+            [
+                "39e639734e8b9a6d"
+            ]
+        ]
+    },
+    {
+        "id": "39e639734e8b9a6d",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "VibrationSensor-a",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-a",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 730,
+        "y": 260,
+        "wires": [
+            [
+                "5462ec406f238c76"
+            ]
+        ]
+    },
+    {
+        "id": "5462ec406f238c76",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 12",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "299b491b1a51fe24",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Vibration-Displacementfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomFloat(0, 1000)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 300,
+        "wires": [
+            [
+                "d8b0e5951fb4e8f8"
+            ]
+        ]
+    },
+    {
+        "id": "d8b0e5951fb4e8f8",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "VibrationSensor-d",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VibrationSensor/vibration-d",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "6012300b96d0f0ef"
+            ]
+        ]
+    },
+    {
+        "id": "6012300b96d0f0ef",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 13",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 840,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "993f4ffe4cf69323",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Voltagefun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 500).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 800,
+        "wires": [
+            [
+                "9fb2e90096a4448e"
+            ]
+        ]
+    },
+    {
+        "id": "9fb2e90096a4448e",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "VoltageSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/VoltageSensor/voltage",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 720,
+        "y": 800,
+        "wires": [
+            [
+                "a615b58808315da9"
+            ]
+        ]
+    },
+    {
+        "id": "a615b58808315da9",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 16",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "c8761418f17c1938",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Powerfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 40).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 860,
+        "wires": [
+            [
+                "c44376c27a824579"
+            ]
+        ]
+    },
+    {
+        "id": "c44376c27a824579",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "PowerSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/PowerSensor/power",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 720,
+        "y": 860,
+        "wires": [
+            [
+                "14b6747c6d7034eb"
+            ]
+        ]
+    },
+    {
+        "id": "14b6747c6d7034eb",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 17",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "377defc3454229b9",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Currentfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 40).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 740,
+        "wires": [
+            [
+                "16eccfa82da525c3"
+            ]
+        ]
+    },
+    {
+        "id": "16eccfa82da525c3",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "CurrentSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/CurrentSensor/current",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 700,
+        "y": 740,
+        "wires": [
+            [
+                "1c668e2765770770"
+            ]
+        ]
+    },
+    {
+        "id": "1c668e2765770770",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 18",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "02cbd493fc497923",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "PHfun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 14).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 500,
+        "wires": [
+            [
+                "da261e62b7495779"
+            ]
+        ]
+    },
+    {
+        "id": "da261e62b7495779",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "PHSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/PHSensor/ph",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 500,
+        "wires": [
+            [
+                "070333459cc540bf"
+            ]
+        ]
+    },
+    {
+        "id": "070333459cc540bf",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 19",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "770f15881858c3c6",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Carbondioxidefun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 560,
+        "wires": [
+            [
+                "808cb77a66a9578c"
+            ]
+        ]
+    },
+    {
+        "id": "808cb77a66a9578c",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "CarbondioxideSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/CarbondioxideSensor/carbondioxide",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 740,
+        "y": 560,
+        "wires": [
+            [
+                "1c226c08328d80be"
+            ]
+        ]
+    },
+    {
+        "id": "1c226c08328d80be",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 20",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "2c048f5384adc994",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Radiationfun-g",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 10000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 920,
+        "wires": [
+            [
+                "57a20ea7d9d83dae"
+            ]
+        ]
+    },
+    {
+        "id": "57a20ea7d9d83dae",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "RadiationSensor-g",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-g",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 920,
+        "wires": [
+            [
+                "c07928b9f6a24932"
+            ]
+        ]
+    },
+    {
+        "id": "c07928b9f6a24932",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 21",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "b0cac7b683702c87",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Radiationfun-ls",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 10000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 960,
+        "wires": [
+            [
+                "42428832d094dd9e"
+            ]
+        ]
+    },
+    {
+        "id": "42428832d094dd9e",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "RadiationSensor-ls",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-ls",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 960,
+        "wires": [
+            [
+                "5b8890b7b11ca9ae"
+            ]
+        ]
+    },
+    {
+        "id": "5b8890b7b11ca9ae",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 22",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "3160e3d8d980002c",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Radiationfun-n",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1000,
+        "wires": [
+            [
+                "34d60ee8c102820d"
+            ]
+        ]
+    },
+    {
+        "id": "34d60ee8c102820d",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "RadiationSensor-n",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-n",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1000,
+        "wires": [
+            [
+                "d105e703513b1fcd"
+            ]
+        ]
+    },
+    {
+        "id": "d105e703513b1fcd",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 23",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "a5e124bb6bb13714",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Radiationfun-i",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 5000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1040,
+        "wires": [
+            [
+                "87b6f3b0111a4836"
+            ]
+        ]
+    },
+    {
+        "id": "87b6f3b0111a4836",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "RadiationSensor-i",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/RadiationSensor/radiation-i",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1040,
+        "wires": [
+            [
+                "547f8bb63d9ffc29"
+            ]
+        ]
+    },
+    {
+        "id": "547f8bb63d9ffc29",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 24",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "34e4258d69fb3e0c",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Flowratefun",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 1100,
+        "wires": [
+            [
+                "29c68982130fbf5e"
+            ]
+        ]
+    },
+    {
+        "id": "29c68982130fbf5e",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "FlowrateSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/FlowrateSensor/flowrate",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 700,
+        "y": 1100,
+        "wires": [
+            [
+                "d354494992510c15"
+            ]
+        ]
+    },
+    {
+        "id": "d354494992510c15",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 26",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "f189be933b0eb2e9",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Chemicalfun-ph",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 14).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1180,
+        "wires": [
+            [
+                "f7eb816834d18de2"
+            ]
+        ]
+    },
+    {
+        "id": "f7eb816834d18de2",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ChemicalSensor-ph",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-ph",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1180,
+        "wires": [
+            [
+                "37a81b4388fdf5d6"
+            ]
+        ]
+    },
+    {
+        "id": "37a81b4388fdf5d6",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 27",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "87b8f4e934bd6dbd",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Chemicalfun-g",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 500).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1220,
+        "wires": [
+            [
+                "3f4e38391420cad9"
+            ]
+        ]
+    },
+    {
+        "id": "3f4e38391420cad9",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ChemicalSensor-g",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-g",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1220,
+        "wires": [
+            [
+                "d9f67831b05d538e"
+            ]
+        ]
+    },
+    {
+        "id": "d9f67831b05d538e",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 28",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "46e76429bd2b30fb",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Chemicalfun-e",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 130).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1260,
+        "wires": [
+            [
+                "c9e8f38d2ba16d36"
+            ]
+        ]
+    },
+    {
+        "id": "c9e8f38d2ba16d36",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ChemicalSensor-e",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-e",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1260,
+        "wires": [
+            [
+                "a65f3e589a1e68bb"
+            ]
+        ]
+    },
+    {
+        "id": "a65f3e589a1e68bb",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 29",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "55293fe300f29b98",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Chemicalfun-i",
+        "func": "function getRandomFloat(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 150).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1300,
+        "wires": [
+            [
+                "fed465b427a127e6"
+            ]
+        ]
+    },
+    {
+        "id": "fed465b427a127e6",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "ChemicalSensor-i",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ChemicalSensor/chemical-i",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1300,
+        "wires": [
+            [
+                "32998e6277f4ba30"
+            ]
+        ]
+    },
+    {
+        "id": "32998e6277f4ba30",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 30",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "3461b628e966a951",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Occupancy-pifun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1380,
+        "wires": [
+            [
+                "4d28e364534ab0ad"
+            ]
+        ]
+    },
+    {
+        "id": "4d28e364534ab0ad",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "OccupancySensor-pi",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-pi",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 720,
+        "y": 1380,
+        "wires": [
+            [
+                "9f498590b78b6efe"
+            ]
+        ]
+    },
+    {
+        "id": "9f498590b78b6efe",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 31",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "aff751c397af0003",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Occupancy-ufun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1420,
+        "wires": [
+            [
+                "aa959058766278ba"
+            ]
+        ]
+    },
+    {
+        "id": "aa959058766278ba",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "OccupancySensor-u",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-u",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 720,
+        "y": 1420,
+        "wires": [
+            [
+                "4def26a0e7dd02c8"
+            ]
+        ]
+    },
+    {
+        "id": "4def26a0e7dd02c8",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 32",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "6204f9325c856f25",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Occupancy-vfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 1460,
+        "wires": [
+            [
+                "3516b39fad5ffc54"
+            ]
+        ]
+    },
+    {
+        "id": "3516b39fad5ffc54",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "OccupancySensor-v",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/OccupancySensor/occupancy-v",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 720,
+        "y": 1460,
+        "wires": [
+            [
+                "e945ce5cdd3e8f50"
+            ]
+        ]
+    },
+    {
+        "id": "e945ce5cdd3e8f50",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 33",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "9f40052bea528b8f",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Heartbeatfun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(40, 200)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 1520,
+        "wires": [
+            [
+                "5dc29941bb678b89"
+            ]
+        ]
+    },
+    {
+        "id": "5dc29941bb678b89",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "HeartbeatSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/HeartbeatSensor/heartbeat",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 710,
+        "y": 1520,
+        "wires": [
+            [
+                "4ef985d8bcd9766f"
+            ]
+        ]
+    },
+    {
+        "id": "4ef985d8bcd9766f",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 34",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "7637f047783c692f",
+        "type": "function",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "Bloodpressurefun",
+        "func": "function getRandomInt(min, max) {\n    return Math.floor(Math.random() * (max - min) + min);\n}\n\nmsg.payload = getRandomInt(0, 300)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 1580,
+        "wires": [
+            [
+                "1033a0ca28d97b08"
+            ]
+        ]
+    },
+    {
+        "id": "1033a0ca28d97b08",
+        "type": "http request",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "BloodPressureSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/BloodpressureSensor/bp",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": true,
+        "headers": [],
+        "x": 740,
+        "y": 1580,
+        "wires": [
+            [
+                "ccb5ae79839b2daf"
+            ]
+        ]
+    },
+    {
+        "id": "ccb5ae79839b2daf",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 35",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "de04a00f4c27518d",
+        "type": "inject",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 440,
+        "y": 140,
+        "wires": [
+            [
+                "43b3c2c905356a82"
+            ]
+        ]
+    },
+    {
+        "id": "db6e9436b73c1c35",
+        "type": "debug",
+        "z": "1cbfc5021b2aa8e7",
+        "name": "debug 36",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 80,
+        "wires": []
+    }
+]
