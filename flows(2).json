@@ -1,0 +1,404 @@
+[
+    {
+        "id": "3051f3b3f7b09b00",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "27aae07f40ccd8b2",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 72",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-40, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 100,
+        "wires": [
+            [
+                "73c44796298c8fac"
+            ]
+        ]
+    },
+    {
+        "id": "73c44796298c8fac",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "TempSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/TempSensor1/temperature",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 100,
+        "wires": [
+            [
+                "0747d7f85575d451"
+            ]
+        ]
+    },
+    {
+        "id": "d816334b640ce625",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "LightSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/LightSensor1/light",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "76af606db8f4ea47"
+            ]
+        ]
+    },
+    {
+        "id": "76af606db8f4ea47",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 180",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "d00167e230dfc447",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "HumidSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/HumidSensor1/humidity",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 160,
+        "wires": [
+            [
+                "4a1224406123ce57"
+            ]
+        ]
+    },
+    {
+        "id": "4a1224406123ce57",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 181",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "0d69e2312a1f1ac8",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "MotionSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/MotionSensor1/motion",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "d6e3f6cad73893d1"
+            ]
+        ]
+    },
+    {
+        "id": "d6e3f6cad73893d1",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 182",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "478af3e199a68a43",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "ProxSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/ProxSensor1/distance",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 420,
+        "y": 360,
+        "wires": [
+            [
+                "641163b8e32f08a9"
+            ]
+        ]
+    },
+    {
+        "id": "641163b8e32f08a9",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 183",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "9fe8102fd956e1e9",
+        "type": "http request",
+        "z": "3051f3b3f7b09b00",
+        "name": "PressureSensor1",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/PressureSensor1/pressure",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 440,
+        "y": 420,
+        "wires": [
+            [
+                "37cfce3ed2e24030"
+            ]
+        ]
+    },
+    {
+        "id": "37cfce3ed2e24030",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 184",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "0747d7f85575d451",
+        "type": "debug",
+        "z": "3051f3b3f7b09b00",
+        "name": "debug 185",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "55f19eb070a1382e",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 73",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 160,
+        "wires": [
+            [
+                "d00167e230dfc447"
+            ]
+        ]
+    },
+    {
+        "id": "e8d56ea75d802442",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 74",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0,100000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "d816334b640ce625"
+            ]
+        ]
+    },
+    {
+        "id": "3f282819efa4a703",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 75",
+        "func": "\nmsg.payload = Math.random() > 0.5;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 300,
+        "wires": [
+            [
+                "0d69e2312a1f1ac8"
+            ]
+        ]
+    },
+    {
+        "id": "dc6d78e608ae9fba",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 76",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0, 1000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "478af3e199a68a43"
+            ]
+        ]
+    },
+    {
+        "id": "204e1ddd57da7c08",
+        "type": "function",
+        "z": "3051f3b3f7b09b00",
+        "name": "function 77",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(0,2000).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 230,
+        "y": 420,
+        "wires": [
+            [
+                "9fe8102fd956e1e9"
+            ]
+        ]
+    },
+    {
+        "id": "dfc5d04a65ed8db7",
+        "type": "inject",
+        "z": "3051f3b3f7b09b00",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 240,
+        "wires": [
+            [
+                "27aae07f40ccd8b2",
+                "55f19eb070a1382e",
+                "e8d56ea75d802442",
+                "3f282819efa4a703",
+                "dc6d78e608ae9fba",
+                "204e1ddd57da7c08"
+            ]
+        ]
+    }
+]
