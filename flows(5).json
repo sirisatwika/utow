@@ -1,0 +1,297 @@
+[
+    {
+        "id": "9a541ff8c541be4f",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "cbeb8b247f6bc259",
+        "type": "function",
+        "z": "9a541ff8c541be4f",
+        "name": "function 78",
+        "func": "function getRandomFloat(min, max) {\n return Math.random() * (max - min) + min;\n}\n\nmsg.payload = getRandomFloat(-40, 100).toFixed(1)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 120,
+        "wires": [
+            [
+                "7768d3ac4ea597ed"
+            ]
+        ]
+    },
+    {
+        "id": "7768d3ac4ea597ed",
+        "type": "http request",
+        "z": "9a541ff8c541be4f",
+        "name": "TemperatureSensor",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59986/api/v2/resource/TemperatureSensor/temperature",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 750,
+        "y": 120,
+        "wires": [
+            [
+                "96af72d8f7de3275"
+            ]
+        ]
+    },
+    {
+        "id": "96af72d8f7de3275",
+        "type": "debug",
+        "z": "9a541ff8c541be4f",
+        "name": "debug 186",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "edfb86570a6e3859",
+        "type": "function",
+        "z": "9a541ff8c541be4f",
+        "name": "function 79",
+        "func": "var output = [];\nvar objects = JSON.parse(msg.payload).readings;\nfor (var o in objects) {\n    var v = objects[o];\n    var ts = Math.floor(v.origin / 1000000);\n    var measurementjson1 = {\n        timestamp: new Date(ts).toISOString(),\n        parameter: v.resourceName,\n        data: v.value,\n        unit: v.units\n    };\n    var measurementjson2 = {\n        gateway: v.deviceName,\n        unique: v.deviceName + \" \" + v.resourceName,\n        location: \"Hyderabad\"\n    };\n    output.push([measurementjson1, measurementjson2]);\n\n}\nconsole.log(output);\nmsg.payload = output;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 180,
+        "wires": [
+            [
+                "b1f7329c722eebe1"
+            ]
+        ]
+    },
+    {
+        "id": "b1f7329c722eebe1",
+        "type": "influxdb out",
+        "z": "9a541ff8c541be4f",
+        "influxdb": "92d96ef258e85909",
+        "name": "TemperatureSensor-out",
+        "measurement": "TemperatureSensor",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "Flowrate",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 1030,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "38eaf6ed8cf254df",
+        "type": "http request",
+        "z": "9a541ff8c541be4f",
+        "name": "TemperatureSensor-event",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://localhost:59880/api/v2/reading/device/name/TemperatureSensor",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 630,
+        "y": 180,
+        "wires": [
+            [
+                "edfb86570a6e3859",
+                "cc97ca88e4317adf"
+            ]
+        ]
+    },
+    {
+        "id": "cc97ca88e4317adf",
+        "type": "debug",
+        "z": "9a541ff8c541be4f",
+        "name": "debug 187",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "bd6b7f7471519358",
+        "type": "influxdb in",
+        "z": "9a541ff8c541be4f",
+        "influxdb": "92d96ef258e85909",
+        "name": "Temp-In",
+        "query": "select * from TemperatureSensor;",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 580,
+        "y": 240,
+        "wires": [
+            [
+                "24c8b7a630e4d7ba"
+            ]
+        ]
+    },
+    {
+        "id": "24c8b7a630e4d7ba",
+        "type": "debug",
+        "z": "9a541ff8c541be4f",
+        "name": "debug 188",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 890,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "d19a1fd9874b015c",
+        "type": "inject",
+        "z": "9a541ff8c541be4f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 380,
+        "y": 140,
+        "wires": [
+            [
+                "cbeb8b247f6bc259"
+            ]
+        ]
+    },
+    {
+        "id": "3ee53532e64cbef9",
+        "type": "inject",
+        "z": "9a541ff8c541be4f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "38eaf6ed8cf254df"
+            ]
+        ]
+    },
+    {
+        "id": "44623707612eaebb",
+        "type": "inject",
+        "z": "9a541ff8c541be4f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "bd6b7f7471519358"
+            ]
+        ]
+    },
+    {
+        "id": "92d96ef258e85909",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "sensorsedgex",
+        "name": "",
+        "usetls": false,
+        "tls": "d50d0c9f.31e858",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "d50d0c9f.31e858",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false
+    }
+]
