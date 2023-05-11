@@ -1,3 +1,4 @@
+steps to create github account
 Go to the GitHub website: https://github.com/
 Click on the "Sign up" button in the top right corner of the page.
 On the next page, you will be prompted to enter your username, email address, and password. Choose a username that you like, and make sure the email address you provide is valid.
@@ -6,3 +7,12 @@ GitHub will now ask you to choose a plan. You can choose between a free plan and
 After choosing your plan, you will be asked to complete a short survey about your experience with coding. You can choose to skip this step if you prefer.
 You will now be prompted to verify your email address. Check your email inbox for a message from GitHub, and follow the instructions to verify your email.
 Once your email is verified, you can start using your GitHub account.
+
+
+steps to push code to github
+First, navigate to the directory where your code is located using the cd command. For example, if your code is in a folder called my-project, you would type: cd my-project
+Initialize a new Git repository by typing git init. This will create a new repository in the current directory.
+Add your files to the repository by typing git add . This will add all files in the current directory to the repository. You can also specify individual files by replacing the . with the filename.
+Commit your changes by typing git commit -m "commit message". Replace "commit message" with a brief description of the changes you made.
+Next, you need to add a remote repository to push your code to. Type git remote add origin https://github.com/username/repo-name.git. Replace "username" with your GitHub username and "repo-name" with the name of the repository you want to push to.
+Push your changes to GitHub by typing git push -u origin main. This will push your changes to the main branch of your remote repository.
