@@ -16,3 +16,11 @@ Add your files to the repository by typing git add . This will add all files in 
 Commit your changes by typing git commit -m "commit message". Replace "commit message" with a brief description of the changes you made.
 Next, you need to add a remote repository to push your code to. Type git remote add origin https://github.com/username/repo-name.git. Replace "username" with your GitHub username and "repo-name" with the name of the repository you want to push to.
 Push your changes to GitHub by typing git push -u origin main. This will push your changes to the main branch of your remote repository.
+
+
+Assets: These are the devices or sensors that are part of the IoT solution, which could include a variety of devices such as smart sensors, cameras, and other edge devices.
+Gateway: This device serves as a bridge between the assets and the central server called iEdge. The gateway can provide local processing and filtering of data before sending it to iEdge, reducing the amount of data sent over the network.
+iEdge: This is the central server of the network architecture that receives data from the gateways and processes it. iEdge can be responsible for handling data storage, analytics, and machine learning.
+Intranet: This is a private network used for internal communications within the organization. The intranet can be used to connect the assets, gateways, and iEdge within the organization.
+VPN: A Virtual Private Network (VPN) provides secure communication between remote sites or users over a public network such as the internet. A VPN can be used to connect remote assets, gateways, or iEdge servers that are not located within the same physical location as the intranet.
+Security: Security is a crucial aspect of any network architecture. It is important to secure the assets, gateways, iEdge, and VPN connections to prevent unauthorized access, data breaches, and other security threats.
