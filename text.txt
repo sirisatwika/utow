@@ -1,1 +1,46 @@
 Custom APIs can be built using EdgeX APIs. The Application Service API allows adding a custom REST route to the application service's internal webserver. 
+return (
+  <React.Fragment>
+    <div className="speedometer-container">
+      <div className="devices">
+        {telemetryData.map((data, index) => (
+          <div key={index}>
+            <input
+              type="checkbox"
+              checked={selectedDevices.includes(data.deviceId)}
+              onChange={() => handleDeviceSelect(data.deviceId)}
+            />
+            <label>{data.deviceName}</label>
+          </div>
+        ))}
+      </div>
+      <div className="dev_speed">
+        {/* Render speedometers for selected devices */}
+        {telemetryData
+          .filter(data => selectedDevices.includes(data.deviceId))
+          .map((data, index) => (
+            <ReactSpeedometer
+              key={index}
+              minValue={-50}
+              maxValue={10000}
+              value={parseFloat(data.devvalue)}
+              segments={10}
+              segmentColors={["#FF7D7D", "#FAEA48","#14C38E"]}
+              currentValueText={55 + "F"}
+              needleColor="black"
+              width={280}
+              height={150}
+              ringWidth={40}
+              needleHeightRatio={0.40}
+              valueTextFontSize={'12px'}
+              needleTransitionDuration={10000}
+              needleTransition="easeElastic"
+              labelFontSize={'11px'}
+              fluidWidth="true"
+            />
+          ))}
+      </div>
+    </div>
+  </React.Fragment>
+);
+
