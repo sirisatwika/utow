@@ -1806,19 +1806,26 @@ class IoTDeviceDetailsDataCollection(Resource):
              #print(apiurl)
              response = requests.get(apiurl)
              #print(response.json())
-             p = response.json()['device']['protocols']
-             print(p)
-             ip = '127.0.0.1'
-             for k,v in p.items():
-                  print(v)
-                  if 'Address' in v:
-                      ip = v['Address']    
-                                                                  
+             p = response.json()['devices']
+             #print(p)
+             #print("next IP")
+             for ga in p:
+             gateway_name = p['name']
+             if gateway_name not in unique_gateway_name:
+                 unique_gateway_names.add(gateway_name)
+                 ip = '127.0.0.1'
+                 if 'protocols' in p:
+                     for k,v in p.items():
+                          print(v)
+                          if 'Address' in p['protocols'].items():
+                              ip = v['Address']    
+             print("printing IP")
+             print(ip)                                                     
              apiurl2='http://'+ip+':59881/api/v2/device/all?limit=-1'
              response2 = requests.get(apiurl2)
              devicelist = response2.json()['devices']
-             devnames=[]
-             for d in devicelist:
+             print(response2)
+             for g in devicelist:
                  device_name = g['name']
                  if device_name not in unique_device_names:
                      unique_device_names.add(device_name)
@@ -1837,12 +1844,13 @@ class IoTDeviceDetailsDataCollection(Resource):
                      time_in_sec = createdtime / pow(10,9)
                      dt = datetime.fromtimestamp(time_in_sec)
                      form_dt = dt.strftime('%Y-%m-%d %H:%M:%S')
+                     print(form_dt)
                      modifiedtime = g['modified']
                      time_in_sec_m = modifiedtime / pow(10,9)
                      dt_m = datetime.fromtimestamp(time_in_sec_m)
                      form_dt_m = dt_m.strftime('%Y-%m-%d %H:%M:%S')
-                     apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+g['profileName']
-                     res_devpro = requests.get(apiurl2)
+                     apiurl3 = "http://localhost:59881/api/v2/deviceprofile/name/"+g['profileName']
+                     res_devpro = requests.get(apiurl3)
                      manufacturername = res_devpro.json()['profile']['manufacturer']
                      if g['operatingState'] == "UP":
                          status = 'online'
@@ -1851,15 +1859,17 @@ class IoTDeviceDetailsDataCollection(Resource):
                      device_info = [
                         g['id'],
                         g['name'],
+                        g['description'],
                         gatewayip,
                         gatewayport,
                         'Hyderabad',
+                        
                         '',
                         '',
                         manufacturername,
                         g['profileName'],
                         g['serviceName'],
-                        g['description'],
+                        
                         status,
                         'provisioned',
                         'Default',
@@ -1874,9 +1884,9 @@ class IoTDeviceDetailsDataCollection(Resource):
                         'NA'
                      ]
                      devices_info.append(device_info)
-                 #print(devices_info)
+                 print(devices_info)
              return devices_info
-         except Exception as e:
+        except Exception as e:
              return str(e)
 
 
