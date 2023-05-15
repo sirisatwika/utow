@@ -1,3 +1,88 @@
+
+import json
+
+@iotd.route('/api/v1/name/getgatewaydetails/all')
+class GatewayDetailsDataCollection(Resource):
+    '''List of gateways details for data collection'''
+    @ns.doc('GatewaysdetailDataCollection')
+    @cross_origin()
+    @api.response(200,'Success..')
+    @api.response(400,'Invalid input')
+    @api.response(404,'Page Not Found')
+    @api.response(500,'Internal Server Error')
+    def get(self):
+        '''Get the list of gateways detail for configuration'''
+        unique_device_names = set()
+        devices_info = []
+        try:           
+            apiurl = "http://localhost:59881/api/v2/device/all?limit=-1"
+            response = requests.get(apiurl)
+            gateways = response.json()['devices']
+            for g in gateways:
+                gatewayip = '127.0.0.1'
+                gatewayport = 0
+                pdata={}
+                if 'protocols' in g:
+                    for k,v in g['protocols'].items():
+                        pdata=v
+                    if 'Address' in pdata:
+                        gatewayip = pdata['Address']
+                    if 'Port' in pdata:
+                        gatewayport = pdata['Port']
+                device_name = g['name']
+                if device_name not in unique_device_names:
+                    unique_device_names.add(device_name)
+                    status = ''
+                    createdtime = g['created']
+                    time_in_sec = createdtime / pow(10,9)
+                    dt = datetime.fromtimestamp(time_in_sec)
+                    form_dt = dt.strftime('%Y-%m-%d %H:%M:%S')
+                    modifiedtime = g['modified']
+                    time_in_sec_m = modifiedtime / pow(10,9)
+                    dt_m = datetime.fromtimestamp(time_in_sec_m)
+                    form_dt_m = dt_m.strftime('%Y-%m-%d %H:%M:%S')
+                    apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+device_name
+                    res_devpro = requests.get(apiurl2)
+                    manufacturername = res_devpro.json()['profile']['manufacturer']
+                    if g['operatingState'] == "UP":
+                        status = 'online'
+                    else:
+                        status = 'offline'
+                    device_info = {
+                        'id': g['id'],
+                        'name': g['name'],
+                        'gatewayip': gatewayip,
+                        'gatewayport': gatewayport,
+                        'location': 'Hyderabad',
+                        'latitude': '',
+                        'longitude': '',
+                        'manufacturername': manufacturername,
+                        'profilename': g['profileName'],
+                        'servicename': g['serviceName'],
+                        'description': g['description'],
+                        'status': status,
+                        'provisioned': 'provisioned',
+                        'protocol': 'Default',
+                        'created': form_dt,
+                        'state': 'Active',
+                        'modified': form_dt_m,
+                        'lastreported': 'NA',
+                        'os': 'Ubuntu 22.04',
+                        'signalstrength': 'Good',
+                        'devicetype': 'NA',
+                        'devicemodel': 'NA',
+                        'version': 'NA'
+                    }
+                    devices_info.append(device_info)
+            return json.dumps(devices_info)
+        except Exception as e:
+            return str(e)
+
+
+
+
+
+
 @iotd.route('/api/v1/name/getgatewaydetails/all')
 class GatewayDetailsDataCollection(Resource):
      '''List of gateways details for data collection'''
