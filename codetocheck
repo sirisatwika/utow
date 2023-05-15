@@ -1,0 +1,95 @@
+@iotd.route('/api/v1/name/getgatewaydetails/all')
+class GatewayDetailsDataCollection(Resource):
+     '''List of gateways details for data collection'''
+     @ns.doc('GatewaysdetailDataCollection')
+     @cross_origin()
+     @api.response(200,'Success..')
+     @api.response(400,'Invalid input')
+     @api.response(404,'Page Not Found')
+     @api.response(500,'Internal Server Error')
+     def get(self):
+         '''Get the list of gateways detail for configuration'''
+         unique_device_names = set()
+         devices_info = []
+         try:           
+             apiurl = "http://localhost:59881/api/v2/device/all?limit=-1"
+             response = requests.get(apiurl)
+             gateways = response.json()['devices']
+             #print(gateways)
+             iotdevicecnt = 0
+             #print("goinf inside foirst for")
+             for g in gateways:
+                 gatewayip = '127.0.0.1'
+                 gatewayport = 0
+                 pdata={}
+                 if 'protocols' in gateways:
+                     for k,v in device['protocols'].items():
+                         pdata=v
+                     #print("printing pdata" + pdata)
+                     if 'Address' in pdata:
+                          gatewayip = pdata['Address']
+                     if 'Port' in pdata:
+                          gatewayport = pdata['Port']
+                 #print("gatewayip" + gatewayip)
+                 #print("going inside for loop")
+                 device_name = g['name']
+                 print(device_name)
+                 if device_name not in unique_device_names:
+                     unique_device_names.add(device_name)
+                     status = ''
+                    
+                     createdtime = g['created']
+                     print(createdtime)
+                     time_in_sec = createdtime / pow(10,9)
+                     dt = datetime.fromtimestamp(time_in_sec)
+                     form_dt = dt.strftime('%Y-%m-%d %H:%M:%S')
+                     
+                     modifiedtime = g['modified']
+                     print(modifiedtime)
+                     time_in_sec_m = modifiedtime / pow(10,9)
+                     dt_m = datetime.fromtimestamp(time_in_sec_m)
+                     form_dt_m = dt_m.strftime('%Y-%m-%d %H:%M:%S')
+                     print(form_dt_m)
+                     
+                     apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+device_name
+                     print(apiurl2)
+                     res_devpro = requests.get(apiurl2)
+                     print(res_devpro)
+                     manufacturername = res_devpro.json()['profile']['manufacturer']
+                     print(manufacturername)
+                     
+                     if g['operatingState'] == "UP":
+                         status = 'online'
+                     else:
+                         status = 'offline'
+                     print(status)
+                     device_info = [
+                        g['id'],
+                        g['name'],
+                        gatewayip,
+                        gatewayPort,
+                        'Hyderabad',
+                        '',
+                        '',
+                        manufacturername,
+                        g['profileName'],
+                        g['serviceName'],
+                        g['description'],
+                        status,
+                        'provisoned',
+                        'Default',
+                        form_dt,
+                        'Active',
+                        form_dt_,
+                        'NA',
+                        'Ubuntu 22.04',
+                        'Good',
+                        'NA',
+                        'NA',
+                        'NA'                                           
+                     ]
+                     devices_info.append(device_info)   
+                 print(devices_info)                    
+             return str(devices_info)
+         except Exception as e:
+             return e
