@@ -1,0 +1,39 @@
+dbtimestamp:
+  created: 1684730084689
+  modified: 1684730689891
+id: 0c31b3a0-91f1-4a2b-beba-2fb40d2063b4
+name: voltagedemo
+manufacturer: LT
+description: demo
+model: "108"
+labels: [voltage, modbus]
+deviceResources:
+- description: voltage demo
+  name: voltage
+  isHidden: true
+  tag: ""
+  properties:
+    valueType: Float32
+    readWrite: RW
+    units: V
+    minimum: "0.0"
+    maximum: "40.0"
+    defaultValue: "1"
+    mask: ""
+    shift: ""
+    scale: ""
+    offset: ""
+    base: ""
+    assertion: ""
+    mediaType: ""
+  attributes:
+    primaryTable: HOLDING_REGISTERS
+    startingAddress: 4001
+deviceCommands:
+- name: Getvoltage
+  isHidden: false
+  readWrite: R
+  resourceOperations:
+  - deviceResource: voltage
+    defaultValue: ""
+    mappings: {}
