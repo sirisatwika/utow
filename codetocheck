@@ -1,63 +1,316 @@
-
-@ns.route('/api/v1/telemetrydata/all')
-class GatewayTelemetryDataAll(Resource):
-     '''Telemetry data for all devices'''
-     @ns.doc('TelemetryDataAll')
-     @cross_origin()
-     @api.response(200,'Success..')
-     @api.response(400,'Invalid input')
-     @api.response(404,'Page Not Found')
-     @api.response(500,'Internal Server Error')
-     def get(self):
-         '''Get the telemetry data from all devices'''
-         unique_device_names = set({})
-         devices_info = []
-         try:
-             apiurlmain = "http://localhost:59881/api/v2/device/all?limit=-1"
-             responsemain = requests.get(apiurlmain)
-             #print(responsemain.json())
-             devicelistmain = responsemain.json()['devices']
-             #print(devicelistmain)
-             for device in devicelistmain:
-                 device_name = device['name']
-                 #print(device)
-                 if device_name not in unique_device_names:
-                     unique_device_names.add(device_name)
-                     #print(unique_device_names)
-                     devproname = device['profileName']  
-                     apiurl2 = "http://localhost:59881/api/v2/deviceprofile/name/"+str(devproname)
-                     resdevproname = requests.get(apiurl2)
-                     #print(resdevproname)
-                     devresname = resdevproname.json()['profile']['deviceResources']
-                     devrescnt = len(devresname)  
-                     #print(devrescnt)              
-                     apiurl = "http://localhost:59880/api/v2/reading/device/name/"+str(device_name)
-                     response = requests.get(apiurl)
-                     readingslist = response.json()['readings']
-                     #print(readingslist)
-                     i = 0
-                     lst = []
-                     while i < devrescnt and readingslist != []:
-                         resource_name = readingslist[i]['resourceName']
-                         res = readingslist[i]['value'] 
-                         num = res
-                         if 'units' in readingslist[i]:
-                             units = readingslist[i]['units']
-                         else:
-                             units = ""
-                         #print(units)
-                         print(type(res))
-                         if '.' in res:
-                            num = '{0:.2f}'.format(float(res))
-                         r = [
-                             device_name,
-                             resource_name,
-                             num,
-                             units
-                         ]
-                         i = i + 1
-                         devices_info.append(r)
-                     #print(devices_info)
-             return json.dumps(devices_info)                                                                 
-         except Exception as e:
-             return e
+[
+    {
+        "id": "ae9caccb12156d0f",
+        "type": "tab",
+        "label": "Modbus",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8bb370c213e9189a",
+        "type": "function",
+        "z": "ae9caccb12156d0f",
+        "name": "function 127",
+        "func": "msg.payload = { \n    value: msg.payload, \n    'fc': 3, \n    'unitid': 1, \n    'address': 0, \n    'quantity': 4\n    } \nreturn msg\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 420,
+        "wires": [
+            [
+                "4b18aff2b2dc778d"
+            ]
+        ]
+    },
+    {
+        "id": "60724b3604fa3d46",
+        "type": "inject",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 70,
+        "y": 320,
+        "wires": [
+            [
+                "7c064a0c456ae1cc"
+            ]
+        ]
+    },
+    {
+        "id": "7c064a0c456ae1cc",
+        "type": "modbus-server",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "logEnabled": false,
+        "hostname": "0.0.0.0",
+        "serverPort": "1502",
+        "responseDelay": 100,
+        "delayUnit": "ms",
+        "coilsBufferSize": 10000,
+        "holdingBufferSize": 10000,
+        "inputBufferSize": 10000,
+        "discreteBufferSize": 10000,
+        "showErrors": false,
+        "x": 280,
+        "y": 340,
+        "wires": [
+            [
+                "a1a050a49ae4eb11"
+            ],
+            [
+                "a1a050a49ae4eb11"
+            ],
+            [
+                "a1a050a49ae4eb11"
+            ],
+            [
+                "a1a050a49ae4eb11"
+            ],
+            [
+                "a1a050a49ae4eb11"
+            ]
+        ]
+    },
+    {
+        "id": "a1a050a49ae4eb11",
+        "type": "debug",
+        "z": "ae9caccb12156d0f",
+        "name": "debug 313",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "6a7e7d11bf402244",
+        "type": "inject",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 70,
+        "y": 420,
+        "wires": [
+            [
+                "8bb370c213e9189a"
+            ]
+        ]
+    },
+    {
+        "id": "4b18aff2b2dc778d",
+        "type": "modbus-flex-getter",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "2b7c5a12.5a5f5c",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 450,
+        "y": 420,
+        "wires": [
+            [
+                "2d4e3d48ea3d76cb"
+            ],
+            [
+                "2d4e3d48ea3d76cb"
+            ]
+        ]
+    },
+    {
+        "id": "2d4e3d48ea3d76cb",
+        "type": "modbus-response",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "registerShowMax": "20",
+        "x": 670,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "63ac86af1f3478dd",
+        "type": "inject",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "123",
+        "payloadType": "num",
+        "x": 70,
+        "y": 500,
+        "wires": [
+            [
+                "14c0c259a7ac15a1"
+            ]
+        ]
+    },
+    {
+        "id": "9b310c3644dddc32",
+        "type": "function",
+        "z": "ae9caccb12156d0f",
+        "name": "function 128",
+        "func": "msg.payload = { \n    value: msg.payload, \n    'fc': 3, \n    'unitid': 1, \n    'address': 4000, \n    'quantity': 4\n    } \nreturn msg\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f90568eaeca1535",
+        "type": "function",
+        "z": "ae9caccb12156d0f",
+        "name": "function 129",
+        "func": "msg.payload = { \n     value: msg.payload, \n    'fc': 16, \n    'unitid': 1, \n    'address': 4000, \n    'quantity': 2\n    } \nreturn msg\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 560,
+        "wires": [
+            [
+                "d7b6c181084de812"
+            ]
+        ]
+    },
+    {
+        "id": "14c0c259a7ac15a1",
+        "type": "join",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 210,
+        "y": 520,
+        "wires": [
+            [
+                "6f90568eaeca1535"
+            ]
+        ]
+    },
+    {
+        "id": "d7b6c181084de812",
+        "type": "modbus-flex-write",
+        "z": "ae9caccb12156d0f",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "server": "2b7c5a12.5a5f5c",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 550,
+        "y": 560,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "2b7c5a12.5a5f5c",
+        "type": "modbus-client",
+        "name": "ModbusTCP",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "localhost",
+        "tcpPort": "1502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": false,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": false
+    }
+]
