@@ -1,3 +1,25 @@
+from random import uniform
+import minimalmodbus
+
+# Modbus server configuration
+SERVER_PORT = 'COM1'  # Port where your Modbus server is connected
+SLAVE_ADDRESS = 1  # Modbus slave address
+
+# Create a minimalmodbus instrument instance
+instrument = minimalmodbus.Instrument(SERVER_PORT, SLAVE_ADDRESS)
+
+# Define the Modbus register addresses
+VOLTAGE_REGISTER = 0  # Address of the voltage register on the Modbus server
+
+# Function to generate random voltage value
+def generate_voltage():
+    return round(uniform(0.0, 10.0), 2)  # Generates a random float between 0 and 10, rounded to 2 decimal places
+
+# Generate and write voltage values
+while True:
+    voltage = generate_voltage()
+    instrument.write_register(VOLTAGE_REGISTER, int(voltage * 100), functioncode=6, numberOfDecimals=2)
+    print(f"Voltage: {voltage} V")
 
 
 Python Modbus Voltage Generator
