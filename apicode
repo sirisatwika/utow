@@ -1,4 +1,46 @@
 
+
+import serial
+import minimalmodbus
+from random import uniform
+from typing import Dict
+
+# Modbus server configuration
+SERVER_PORT = 'COM1'  # Port where your Modbus server is connected
+SLAVE_ADDRESS = 1  # Modbus slave address
+
+# Create a minimalmodbus instrument instance
+instrument = minimalmodbus.Instrument(SERVER_PORT, SLAVE_ADDRESS)
+instrument.serial.timeout = 0.1  # Set the serial communication timeout (adjust as needed)
+
+# Dictionary to store serial ports
+serialports: Dict[str, serial.Serial] = {}  # Key: port name, value: port instance
+
+# Get a list of available serial ports
+available_ports = serial.tools.list_ports.comports()
+
+# Iterate over available ports and create serial port instances
+for port in available_ports:
+    port_name = port.device
+    serialports[port_name] = serial.Serial(port_name)
+
+# Function to generate random voltage value
+def generate_voltage():
+    return round(uniform(0.0, 10.0), 2)  # Generates a random float between 0 and 10, rounded to 2 decimal places
+
+# Generate and write voltage values for each serial port
+for port_name, port_instance in serialports.items():
+    while True:
+        voltage = generate_voltage()
+        instrument.serial = port_instance  # Set the serial port for the Modbus instrument
+        instrument.write_register(0, int(voltage * 100), functioncode=6, numberOfDecimals=2)
+        print(f"Voltage for {port_name}: {voltage} V")
+
+
+
+
+
+
 import serial
 from typing import Dict
 
