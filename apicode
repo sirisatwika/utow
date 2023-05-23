@@ -1,4 +1,48 @@
-@app.route('/api/v1/gateway/telemetrydata/<devicename>')
+
+
+Python Modbus Voltage Generator
+
+
+User
+Python code to generate data for voltage using modbus protocol 
+
+ChatGPT
+To generate data for voltage using the Modbus protocol in Python, you can use the PyModbus library. Here's an example code that demonstrates how to generate random voltage values and write them to a Modbus server using the TCP/IP connection:
+
+python
+Copy code
+from random import uniform
+from pymodbus.client.sync import ModbusTcpClient
+
+# Modbus server configuration
+SERVER_IP = '127.0.0.1'  # IP address of the Modbus server
+SERVER_PORT = 502  # Modbus server port
+UNIT_ID = 1  # Modbus unit identifier
+
+# Function to generate random voltage value
+def generate_voltage():
+    return round(uniform(0.0, 10.0), 2)  # Generates a random float between 0 and 10, rounded to 2 decimal places
+
+# Connect to the Modbus server
+client = ModbusTcpClient(SERVER_IP, SERVER_PORT)
+
+# Generate and write voltage values
+while True:
+    voltage = generate_voltage()
+    client.write_register(0, int(voltage * 100), unit=UNIT_ID)  # Multiply by 100 to convert to integer value
+    print(f"Voltage: {voltage} V")
+Make sure you have the pymodbus library installed (pip install pymodbus) before running this code. Update the SERVER_IP, SERVER_PORT, and UNIT_ID variables with the appropriate values for your Modbus server.
+
+In the code above, the generate_voltage() function generates a random voltage value between 0 and 10. The while loop continuously generates new voltage values and writes them to the Modbus server using the write_register() function. The voltage value is multiplied by 100 and converted to an integer before writing it to the server. Adjust the multiplication factor according to the desired precision.
+
+Remember to handle the disconnection and error cases appropriately in your production code.
+
+
+
+
+
+
+@aqpp.route('/api/v1/gateway/telemetrydata/<devicename>')
 @cross_origin()
 def gettelemetrydata(devicename):
     try:
