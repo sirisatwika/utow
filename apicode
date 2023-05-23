@@ -1,3 +1,25 @@
+
+import serial
+from typing import Dict
+
+# Dictionary to store serial ports
+serialports: Dict[str, serial.Serial] = {}  # Key: port name, value: port instance
+
+# Get a list of available serial ports
+available_ports = serial.tools.list_ports.comports()
+
+# Iterate over available ports and create serial port instances
+for port in available_ports:
+    port_name = port.device
+    serialports[port_name] = serial.Serial(port_name)
+
+# Example usage: print the serial ports
+for port_name, port_instance in serialports.items():
+    print(f"Serial Port: {port_name}")
+
+
+
+
 from random import uniform
 import minimalmodbus
 
