@@ -174,35 +174,6 @@
         "wires": []
     },
     {
-        "id": "63ac86af1f3478dd",
-        "type": "inject",
-        "z": "ae9caccb12156d0f",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "123",
-        "payloadType": "num",
-        "x": 70,
-        "y": 500,
-        "wires": [
-            [
-                "14c0c259a7ac15a1"
-            ]
-        ]
-    },
-    {
         "id": "9b310c3644dddc32",
         "type": "function",
         "z": "ae9caccb12156d0f",
@@ -216,73 +187,6 @@
         "x": 250,
         "y": 420,
         "wires": [
-            []
-        ]
-    },
-    {
-        "id": "6f90568eaeca1535",
-        "type": "function",
-        "z": "ae9caccb12156d0f",
-        "name": "function 129",
-        "func": "msg.payload = { \n     value: msg.payload, \n    'fc': 16, \n    'unitid': 1, \n    'address': 4000, \n    'quantity': 2\n    } \nreturn msg\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 350,
-        "y": 560,
-        "wires": [
-            [
-                "d7b6c181084de812"
-            ]
-        ]
-    },
-    {
-        "id": "14c0c259a7ac15a1",
-        "type": "join",
-        "z": "ae9caccb12156d0f",
-        "name": "",
-        "mode": "custom",
-        "build": "array",
-        "property": "payload",
-        "propertyType": "msg",
-        "key": "topic",
-        "joiner": "\\n",
-        "joinerType": "str",
-        "accumulate": false,
-        "timeout": "",
-        "count": "2",
-        "reduceRight": false,
-        "reduceExp": "",
-        "reduceInit": "",
-        "reduceInitType": "",
-        "reduceFixup": "",
-        "x": 210,
-        "y": 520,
-        "wires": [
-            [
-                "6f90568eaeca1535"
-            ]
-        ]
-    },
-    {
-        "id": "d7b6c181084de812",
-        "type": "modbus-flex-write",
-        "z": "ae9caccb12156d0f",
-        "name": "",
-        "showStatusActivities": false,
-        "showErrors": false,
-        "showWarnings": true,
-        "server": "2b7c5a12.5a5f5c",
-        "emptyMsgOnFail": false,
-        "keepMsgProperties": false,
-        "delayOnStart": false,
-        "startDelayTime": "",
-        "x": 550,
-        "y": 560,
-        "wires": [
-            [],
             []
         ]
     },
