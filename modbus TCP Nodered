@@ -1,0 +1,112 @@
+To access the Modbus data from Node-RED in EdgeX Foundry, you can follow these steps:
+
+Install and set up EdgeX Foundry: Ensure that you have EdgeX Foundry installed and running on your system. You can refer to the EdgeX Foundry documentation for detailed instructions on installation and setup.
+
+Create an EdgeX Foundry device: In EdgeX Foundry, you need to define a device that represents your Modbus data source. This device will act as a bridge between Node-RED and EdgeX Foundry. You can create the device using the EdgeX Foundry management APIs or the management console provided by EdgeX Foundry.
+
+Configure the device in Node-RED: In Node-RED, you need to configure a Modbus node to connect to your Modbus data source and retrieve the data. Use the Modbus node provided by Node-RED and configure it with the appropriate settings to connect to your Modbus device.
+
+Transform the data: Once you retrieve the Modbus data in Node-RED, you might need to transform it into a format that is compatible with EdgeX Foundry. You can use the various nodes and functions available in Node-RED to manipulate and transform the data as required.
+
+Publish the data to EdgeX Foundry: In Node-RED, you can use the EdgeX Foundry REST APIs or MQTT protocol to publish the transformed Modbus data to EdgeX Foundry. Depending on your preference and the capabilities of your EdgeX Foundry installation, you can choose the appropriate method for data ingestion.
+
+Verify data ingestion: Check the EdgeX Foundry console or use EdgeX Foundry APIs to verify that the data is being successfully ingested into EdgeX Foundry and made available for further processing and analysis.
+
+
+
+
+
+
+
+
+[
+    {
+        "id": "e133e8d1.99723",
+        "type": "modbus-read",
+        "z": "a3a1f88b.bf65a8",
+        "name": "Modbus Read",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "1",
+        "rate": "5",
+        "rateUnit": "s",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "dd932546.c0d35",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "76222c08.18c77c"
+            ]
+        ]
+    },
+    {
+        "id": "76222c08.18c77c",
+        "type": "function",
+        "z": "a3a1f88b.bf65a8",
+        "name": "Transform Data",
+        "func": "// Scale raw value to obtain voltage\nvar rawValue = msg.payload;\nvar voltage = rawValue / 10;\n\n// Create payload with voltage\nmsg.payload = {\n    value: voltage,\n    units: \"V\"\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 410,
+        "y": 160,
+        "wires": [
+            [
+                "4bbf60bb.5dcd3c"
+            ]
+        ]
+    },
+    {
+        "id": "4bbf60bb.5dcd3c",
+        "type": "edgex-publish",
+        "z": "a3a1f88b.bf65a8",
+        "name": "EdgeX Publish",
+        "deviceName": "voltage_sensor",
+        "deviceServiceName": "modbus_service",
+        "resourceName": "voltage",
+        "contentType": "application/json",
+        "protocol": "http",
+        "protocolConfig": "",
+        "security": "",
+        "x": 630,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "dd932546.c0d35",
+        "type": "modbus-client",
+        "name": "Modbus Client",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "tcpHost": "localhost",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "1000",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectTimeout": "2000",
+        "x": 200,
+        "y": 80,
+        "wires": []
+    }
+]
