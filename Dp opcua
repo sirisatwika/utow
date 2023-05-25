@@ -1,0 +1,50 @@
+
+name: opcua-device-profile
+description: OPC UA Device Profile
+manufacturer: OPC Foundation
+model: OPC UA Device
+
+labels:
+  - opcua
+  - device
+
+deviceResources:
+  - name: temperature
+    description: Temperature Sensor
+    properties:
+      value:
+        type: Float32
+        readWrite: R
+      units:
+        type: String
+        readWrite: R
+
+  - name: pressure
+    description: Pressure Sensor
+    properties:
+      value:
+        type: Float32
+        readWrite: R
+      units:
+        type: String
+        readWrite: R
+
+deviceCommands:
+  - name: reset
+    get:
+      path: /reset
+      responses:
+        - code: 200
+
+  - name: calibration
+    put:
+      path: /calibration
+      responses:
+        - code: 200
+
+service:
+  description: OPC UA Device Service
+  labels:
+    - opcua
+  adminState: UNLOCKED
+  operatingState: ENABLED
