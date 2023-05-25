@@ -1,0 +1,1 @@
+code: 0 , message: Http failure response for http://localhost:4000/core-command/api/v2/device/name/opcua-device-profile/temperature?ds-pushevent=yes&ds-returnevent=yes: 0 Unknown Error 
