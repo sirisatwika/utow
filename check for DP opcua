@@ -2,6 +2,49 @@ name: opcua-device-profile
 description: OPC UA Device Profile
 manufacturer: OPC Foundation
 model: OPC UA Device
+labels: [opcua, device]
+
+deviceResources:
+  - name: temperature
+    description: Temperature Sensor
+    properties:
+      valueType: Float32
+      readWrite: RW
+      units: R
+
+  - name: pressure
+    description: Pressure Sensor
+    properties:
+      valueType: Float32
+      readWrite: RW
+      units: R
+
+deviceCommands:
+  - name: Getreset
+    isHidden: false
+    readWrite: RW
+    get:
+      resourceOperations:
+        - deviceResource: reset
+          defaultValue: ""
+          mappings: {}
+
+  - name: Getcalibration
+    isHidden: false
+    readWrite: RW
+    get:
+      resourceOperations:
+        - deviceResource: calibration
+          defaultValue: ""
+          mappings: {}
+
+
+
+
+name: opcua-device-profile
+description: OPC UA Device Profile
+manufacturer: OPC Foundation
+model: OPC UA Device
 labels: [opcua,device]
 deviceResources:
   - name: temperature
