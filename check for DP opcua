@@ -20,14 +20,16 @@ deviceCommands:
   - name: Getreset
     isHidden : false
     readWrite: RW
-    resouceOperations:
-    - deviceResource: reset
-      defaultValue: ""
-      mappings: {}
+    get:
+      resouceOperations:
+       - deviceResource: reset
+         defaultValue: ""
+          mappings: {}
   - name: Getcalibration
     isHidden : false
     readWrite: RW
-    resouceOperations:
-    - deviceResource: calibration
-      defaultValue: ""
-      mappings: {}
+    get: 
+      resouceOperations:
+       - deviceResource: calibration
+         defaultValue: ""
+         mappings: {}
