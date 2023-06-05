@@ -1,0 +1,17 @@
+import pyautogui
+import time
+
+# Time interval in seconds between each mouse click
+interval = 60
+
+try:
+    while True:
+        # Simulate a left mouse button click
+        pyautogui.click(button='left')
+
+        # Wait for the specified interval
+        time.sleep(interval)
+except KeyboardInterrupt:
+    # Exit the script if a keyboard interrupt (Ctrl+C) is detected
+    pass
+
