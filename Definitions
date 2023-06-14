@@ -5,3 +5,12 @@ SSH (Secure Shell): SSH is a secure network protocol that enables secure remote 
 RDP (Remote Desktop Protocol): RDP is a proprietary protocol developed by Microsoft for remote desktop access. It allows you to connect to a Windows-based edge device and control it remotely as if you were sitting in front of it. To diagnose an edge device using RDP, you need an RDP client installed on your local machine. Once you have the RDP client, you can provide the IP address or hostname of the edge device, along with valid credentials, to establish an RDP session. This enables you to see and interact with the desktop environment of the device, access files and applications, and perform diagnostic tasks directly on the device.
 
 When using SSH or RDP for remote diagnosis, it's important to ensure that you have proper network connectivity between your local machine and the edge device. You also need to have the necessary credentials (username and password or SSH keys) to authenticate and establish a secure connection.
+
+
+health status of the operating system (OS), RAM, and other hardware infrastructure, you can utilize various system monitoring and diagnostic tools. These tools collect and analyze system data to provide insights into the health and performance of your system. Here are some common methods and tools for monitoring system health:
+
+Performance Monitoring Tools: Operating systems often come with built-in performance monitoring tools that can provide information about CPU usage, memory usage, disk utilization, network activity, and other performance metrics. Examples include Windows Performance Monitor, Linux Performance Monitoring Tools (such as top, vmstat, and sar), and macOS Activity Monitor.
+
+System Health Checks: Many server and infrastructure monitoring solutions offer system health checks that examine the overall health and status of the OS and hardware. These checks can include monitoring disk health, CPU temperature, fan speed, power supply status, and other hardware-specific metrics.
+
+Hardware Diagnostic Utilities: Some hardware manufacturers provide specific diagnostic utilities or software packages for their devices. These utilities can perform tests to check the health and functionality of individual hardware components, including RAM, hard drives, network adapters, and more.
