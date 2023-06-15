@@ -1,0 +1,14 @@
+Connectors such as CAN (Controller Area Network), OPC UA (Open Platform Communications Unified Architecture), and Modbus are commonly used in industrial settings to collect data from sensors or devices.
+
+CAN Connector: CAN is a communication protocol widely used in automotive and industrial applications. It allows devices to communicate efficiently over a shared network. CAN connectors are used to physically connect devices to the CAN bus, enabling them to transmit and receive data.
+
+OPC UA: OPC UA is a machine-to-machine communication protocol used in industrial automation. It provides a standardized and platform-independent means of exchanging data between devices from different manufacturers. OPC UA connectors facilitate the establishment of connections and data exchange between OPC UA-enabled devices.
+
+Modbus: Modbus is a popular serial communication protocol used for connecting industrial electronic devices. It enables data exchange between devices such as programmable logic controllers (PLCs) and sensors. Modbus connectors are used to establish connections between devices and facilitate the transmission of data.
+
+These connectors play a crucial role in collecting data from sensors or devices and enable the integration of different systems in industrial environments.
+
+
+
+
+
