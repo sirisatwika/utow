@@ -1,0 +1,66 @@
+[
+  {
+    "id": "e57e5272.7e032",
+    "type": "tab",
+    "label": "Azure IoT Hub Telemetry",
+    "disabled": false,
+    "info": ""
+  },
+  {
+    "id": "d429af9c.1b18b",
+    "type": "inject",
+    "z": "e57e5272.7e032",
+    "name": "Generate Telemetry",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "2",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "{\"temperature\": $random(20,40), \"humidity\": $random(30,70)}",
+    "payloadType": "json",
+    "x": 180,
+    "y": 160,
+    "wires": [
+      [
+        "c5017382.3581e8"
+      ]
+    ]
+  },
+  {
+    "id": "c5017382.3581e8",
+    "type": "azureiothub",
+    "z": "e57e5272.7e032",
+    "name": "Send to Azure IoT Hub",
+    "azureConfig": "f706df51.9fe2d8",
+    "device": "device1",
+    "messageType": "device",
+    "messageProperty": "payload",
+    "topic": "telemetry",
+    "x": 460,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "f706df51.9fe2d8",
+    "type": "azureiothub-config",
+    "z": "",
+    "name": "Azure IoT Hub",
+    "host": "<Azure IoT Hub Hostname>",
+    "sharedAccessKey": "<Shared Access Key>",
+    "deviceid": "",
+    "devicename": "",
+    "outputType": "str",
+    "x": 310,
+    "y": 80,
+    "wires": [
+      [
+        "c5017382.3581e8"
+      ]
+    ]
+  }
+]
