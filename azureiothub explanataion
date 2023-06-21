@@ -1,0 +1,10 @@
+The "Generate Telemetry Data" inject node triggers the flow every 2 seconds to generate random telemetry data.
+The "Generate Random Telemetry Data" function node creates random values for temperature and humidity and formats them as a JSON object.
+The "Azure IoT Hub" node (connected to the "Generate Random Telemetry Data" node) sends the telemetry data to Azure IoT Hub.
+The "Azure IoT Hub" node (connected to the "Telemetry Data" chart node) retrieves the telemetry data from Azure IoT Hub.
+The "Telemetry Data" chart node displays the received telemetry data on the Node-RED dashboard.
+The "Azure IoT Hub" node (connected to the "Temperature" gauge node) retrieves the telemetry data from Azure IoT Hub.
+The "Temperature" gauge node displays the temperature value on the Node-RED dashboard.
+The "Azure IoT Hub" node (connected to the "Humidity" gauge node) retrieves the telemetry data from Azure IoT Hub.
+The "Humidity" gauge node displays the humidity value on the Node-RED dashboard.
+Ensure you have the necessary Azure IoT Hub and Node-RED configurations set up, including installing the required Node-RED nodes (e.g., node-red-contrib-azureiothub and node-red-dashboard).
